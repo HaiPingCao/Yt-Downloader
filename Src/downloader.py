@@ -61,6 +61,12 @@ if __name__ == '__main__':
     video_url_input = "https://www.youtube.com/watch?v=ANygbRCuwZo&pp=ygUGY2FzdGxl" #str(input("Enter video URL: "))  # Example playlist URL
     
     print(INFO(video_url_input)[0], INFO(video_url_input)[2])
+    Instance = vlc.Instance()
+    player = Instance.media_player_new()
+    Media = Instance.media_new(video_url_input)
+    Media.get_mrl()
+    player.set_media(Media)
+    player.play()
     
     # if video_url_input.startswith("https://www.youtube.com/playlist?list="):
     #     print("Downloading Playlist...")
