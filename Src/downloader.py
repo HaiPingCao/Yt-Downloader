@@ -1,9 +1,7 @@
 import yt_dlp
 import os
-import vlc
+# import vlc
 
-# start = time.time()
-tempf_path = "\\Temp"
 
 def INFO(url):
     i4o = {
@@ -17,8 +15,9 @@ def INFO(url):
         video_id = info_dict.get('id', None)
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
+        url = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
 
-    return video_id, video_title, webpage_url
+    return video_id, video_title, webpage_url, url
 
 def YT_DOWNLOADER(video_url, download_folder):
 
@@ -30,7 +29,6 @@ def YT_DOWNLOADER(video_url, download_folder):
         'no_warnings': True,
         'ignoreerrors': True,
         'keepvideo': False,
-        'noplaylist': False,  # Allow downloading playlists
         'postprocessors': [
             {
                 'key': 'FFmpegExtractAudio',
@@ -58,22 +56,10 @@ def YT_DOWNLOADER(video_url, download_folder):
         
 
 if __name__ == '__main__':
-    video_url_input = "https://www.youtube.com/watch?v=ANygbRCuwZo&pp=ygUGY2FzdGxl" #str(input("Enter video URL: "))  # Example playlist URL
-    
-    print(INFO(video_url_input)[0], INFO(video_url_input)[2])
-    Instance = vlc.Instance()
-    player = Instance.media_player_new()
-    Media = Instance.media_new(video_url_input)
-    Media.get_mrl()
-    player.set_media(Media)
-    player.play()
-    
+    tempf_path = "\\Temp"
+    video_url_input = str(input("Enter video URL: "))
+    print(INFO(video_url_input)[3])
     # if video_url_input.startswith("https://www.youtube.com/playlist?list="):
-    #     print("Downloading Playlist...")
     #     YT_DOWNLOADER(video_url_input, tempf_path)
     # else:
     #     YT_DOWNLOADER(video_url_input, tempf_path)
-
-    # end = time.time()
-    # total_time = end - start
-    # print(f"\n{total_time} seconds")
