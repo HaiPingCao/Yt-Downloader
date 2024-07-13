@@ -1,7 +1,6 @@
 import yt_dlp
 import os
 
-
 def Info(url):
     i4o = {
         'no_warnings': True,
@@ -16,12 +15,10 @@ def Info(url):
         video_id = info_dict.get('id', None)
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
-       
-
-    return video_id, video_title, webpage_url
+        surl = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
+    return video_id, video_title, webpage_url, surl
 
 def Yt_downloader(video_url, download_folder):
-
     options = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(download_folder, '%(title)s.%(ext)s'),
@@ -40,8 +37,8 @@ def Yt_downloader(video_url, download_folder):
             }
         ],
     }
-
     with yt_dlp.YoutubeDL(options) as ydl:
         entry = Info(video_url)[2]
         ydl.download(entry)
     
+print(Info("https://www.youtube.com/watch?v=0dhSm2n7Gc8")[0])
