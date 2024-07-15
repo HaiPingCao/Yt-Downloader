@@ -25,6 +25,6 @@ def I4T(link: str):
 if __name__ == '__main__':
      # print(main(video_url))
      print(I4T(video_url))
-     print('//////////////////////////\n')
+     print('//////////////////////////')
      
      Utilities.Media_Player(I4T(video_url)[3], I4T(video_url)[2])
