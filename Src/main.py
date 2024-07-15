@@ -6,7 +6,7 @@ import time
 
 
 tempf_path: str = "\\Temp"
-video_url: str = "https://www.youtube.com/watch?v=0dhSm2n7Gc8&list=RD0dhSm2n7Gc8&start_radio=1" #input("Enter video URL: ")
+video_url: str = "https://www.youtube.com/watch?v=DZ0oir_DLao" #input("Enter video URL: ")
 
 
 def I4T(link: str):

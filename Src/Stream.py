@@ -13,7 +13,7 @@ def Info(url):
           'abort_on_unavailable_fragments': True,
           'flat_list': True,
           'noplaylist': True,
-          # 'quiet': True,
+          'quiet': True,
      }
      with yt_dlp.YoutubeDL(i4o) as info:
           info_dict = info.extract_info(url, download=False)
