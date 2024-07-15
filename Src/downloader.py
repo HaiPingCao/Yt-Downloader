@@ -1,5 +1,6 @@
 import yt_dlp
 import os
+os.add_dll_directory(r'C:\VLC')
 
 def Info(url):
     i4o = {
@@ -41,4 +42,6 @@ def Yt_downloader(video_url, download_folder):
         entry = Info(video_url)[2]
         ydl.download(entry)
     
-print(Info("https://www.youtube.com/watch?v=0dhSm2n7Gc8")[0])
+link:str = Info("https://www.youtube.com/watch?v=0dhSm2n7Gc8")[3]
+print(link)
+
