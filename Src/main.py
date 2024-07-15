@@ -1,4 +1,4 @@
-import downloader
+import Stream
 import os
 os.add_dll_directory(r'C:\VLC')
 import vlc
@@ -6,21 +6,25 @@ import time
 
 
 tempf_path: str = "\\Temp"
-video_url_input: str = input("Enter video URL: ")
+video_url: str = "https://www.youtube.com/watch?v=0dhSm2n7Gc8&list=RD0dhSm2n7Gc8&start_radio=1" #input("Enter video URL: ")
+
+
+def I4T(link: str):
+     X = Stream.Info(link)
+     A = X[0]
+     B = X[1]
+     C = X[2]
+     D = X[3]
+     return A, B, C, D
+
+
+# def main(link: str):
+#      I4T(link)
+
 
 if __name__ == '__main__':
-
-     playurl = downloader.Info(video_url_input)[3]     
-     downloader.Yt_downloader(playurl, tempf_path)
+     # print(main(video_url))
+     print(I4T(video_url))
+     print('//////////////////////////\n')
      
-     
-     playurl = downloader.Info(video_url_input)[3]     
-     print(playurl)
-     
-     Instance = vlc.Instance()
-     player = Instance.media_player_new()
-     Media = Instance.media_new(playurl)
-     Media.get_mrl()
-     player.set_media(Media)
-     player.play()
-     time.sleep(100)
+     Stream.Media_Player(I4T(video_url)[3], I4T(video_url)[2])
