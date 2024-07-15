@@ -1,6 +1,6 @@
-import Stream
+import Utilities
 import os
-os.add_dll_directory(r'C:\VLC')
+
 import vlc
 import time
 
@@ -10,7 +10,7 @@ video_url: str = "https://www.youtube.com/watch?v=DZ0oir_DLao" #input("Enter vid
 
 
 def I4T(link: str):
-     X = Stream.Info(link)
+     X = Utilities.Info(link)
      A = X[0]
      B = X[1]
      C = X[2]
@@ -27,4 +27,4 @@ if __name__ == '__main__':
      print(I4T(video_url))
      print('//////////////////////////\n')
      
-     Stream.Media_Player(I4T(video_url)[3], I4T(video_url)[2])
+     Utilities.Media_Player(I4T(video_url)[3], I4T(video_url)[2])
