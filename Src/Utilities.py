@@ -1,7 +1,6 @@
 import yt_dlp
 import os
-os.add_dll_directory(os.getcwd())
-# os.add_dll_directory(r'C:\VLC')
+os.add_dll_directory(os.getcwd())  # os.add_dll_directory(r'C:\VLC')
 import vlc
 import time
 
@@ -48,16 +47,16 @@ def Yt_downloader(video_url, download_folder):
           'ignoreerrors': True,
           'keepvideo': False,
           'noplaylist': True,
-          'postprocessors': [
-               {
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-               }
-          ],
+          # 'postprocessors': [
+          #      {
+          #           'key': 'FFmpegExtractAudio',
+          #           'preferredcodec': 'mp3',
+          #           'preferredquality': '192',
+          #      }
+          # ],
      }
      with yt_dlp.YoutubeDL(options) as ydl:
-          entry = Info(video_url)[2]
+          entry = Info(video_url)[1]
           ydl.download(entry)
 
 
