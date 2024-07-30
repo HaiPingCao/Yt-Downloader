@@ -8,6 +8,9 @@ import vlc
 
 
 def Info(url):
+    '''
+    Returns: video_title, webpage_url, duration, surl
+    '''
     i4o = {
         'no_warnings': True,
         'ignoreerrors': True,
@@ -123,10 +126,10 @@ class MediaPlayer:
         
         
 if __name__ == '__main__':
-    video_url: str = "https://rr1---sn-8qj-i5ozr.googlevideo.com/videoplayback?expire=1721391003&ei=OwOaZp7yOPyWvcAPh97T8Aw&ip=113.190.214.224&id=o-AMCib8zvbXvPm96Xr6KodQ5BaESLcT-yQGzbjTjVVONt&itag=140&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=08&mm=31%2C29&mn=sn-8qj-i5ozr%2Csn-8qj-i5oks&ms=au%2Crdu&mv=m&mvi=1&pl=25&gcr=vn&initcwndbps=1763750&vprv=1&svpuc=1&mime=audio%2Fmp4&rqh=1&gir=yes&clen=2642829&dur=163.199&lmt=1609958598735730&mt=1721369084&fvip=1&keepalive=yes&c=IOS&txp=2311222&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cgcr%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRQIhAIVqU3jaUE8AtyhRY5YqBP9o0JRnV67yaqDY8aoZ2Il9AiB-fM3V5bKbJiglxn5OhlFtcGloYLulngDAiEpyTuaO5w%3D%3D&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AHlkHjAwRQIhAJeExYnxB-9byEkKu_HPsIkVWDQO1uCrvatuhZ73QlLBAiAk9BXleUksd6VNqdb2oXx9NVIVAkMXqQfIXk3x8H_EQw%3D%3D"
-    # info: list = Info(video_url)
+    video_url: str = "https://www.youtube.com/watch?v=T3ZdW1GB3Kc&list=RDT3ZdW1GB3Kc&start_radio=1"
+    info: list = Info(video_url)
     player = MediaPlayer()
-    player.open_media(video_url)
+    player.open_media(info[3])
     
     time.sleep(1)
     print("Controls: play, pause, stop, volume, seek, exit")
