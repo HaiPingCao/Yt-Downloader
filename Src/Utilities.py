@@ -2,8 +2,8 @@ import yt_dlp
 import time
 import os
 
-vlc: str = '../VLC_Win'
-os.add_dll_directory(os.getcwd())  # os.add_dll_directory(vlc)  # os.add_dll_directory(os.getcwd())  # os.add_dll_directory(r'C:\VLC')
+dir: str = os.getcwd()
+os.add_dll_directory(dir)
 import vlc
 
 
@@ -17,7 +17,7 @@ def Info(url):
         'abort_on_unavailable_fragments': True,
         'flat_list': True,
         'noplaylist': True,
-        'quiet': True,
+        'quiet': False,
     }
     with yt_dlp.YoutubeDL(i4o) as info:
         info_dict = info.extract_info(url, download=False)
@@ -30,7 +30,7 @@ def Info(url):
     return video_title, webpage_url, duration, surl
 
 
-def YtDownloader(video_url, download_folder):
+def DL(video_url, download_folder):
     options = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(download_folder, '%(title)s.%(ext)s'),
@@ -53,15 +53,6 @@ def YtDownloader(video_url, download_folder):
         entry = Info(video_url)[1]
         ydl.download(entry)
 
-
-# def MediaPlayer(url, duration):
-#     Instance = vlc.Instance()
-#     player = Instance.media_player_new()
-#     Media = Instance.media_new(url)
-#     Media.get_mrl()
-#     player.set_media(Media)
-#     player.play()
-#     time.sleep(duration)
     
     
 class MediaPlayer:
@@ -75,17 +66,26 @@ class MediaPlayer:
         self.player.set_media(media)
         self.player.play()
 
-    def play(self):
-        """Plays the media."""
-        self.player.play()
+    def music_controls(self, command):
+        """Controls the playback of the media."""
+        if command == "play":
+            self.player.play()
+        elif command == "pause":
+            self.player.pause()
+        elif command == "stop":
+            self.player.stop()
 
-    def pause(self):
-        """Pauses the media."""
-        self.player.pause()
+    # def play(self):
+    #     """Plays the media."""
+    #     self.player.play()
 
-    def stop(self):
-        """Stops the media."""
-        self.player.stop()
+    # def pause(self):
+    #     """Pauses the media."""
+    #     self.player.pause()
+
+    # def stop(self):
+    #     """Stops the media."""
+    #     self.player.stop()
 
     def set_volume(self, volume):
         """Sets the volume (0-100)."""
@@ -123,10 +123,8 @@ class MediaPlayer:
         """Gets the current state of the player."""
         return self.player.get_state()
         
-        
-        
-if __name__ == '__main__':
-    video_url: str = "https://www.youtube.com/watch?v=T3ZdW1GB3Kc&list=RDT3ZdW1GB3Kc&start_radio=1"
+def ST():
+    video_url: str = input("Url: ")
     info: list = Info(video_url)
     player = MediaPlayer()
     player.open_media(info[3])
@@ -137,11 +135,11 @@ if __name__ == '__main__':
         command = input("Enter command: ").strip().lower()
         
         if command == "play":
-            player.play()
+            player.music_controls("play")
         elif command == "pause":
-            player.pause()
+            player.music_controls("pause")
         elif command == "stop":
-            player.stop()
+            player.music_controls("stop")
         elif command.startswith("volume"):
             try:
                 volume = int(command.split()[1])
@@ -161,3 +159,8 @@ if __name__ == '__main__':
             break
         else:
             print("Unknown command. Available commands: play, pause, stop, volume, seek, exit")
+        
+if __name__ == '__main__':
+    
+    ST()
+    
