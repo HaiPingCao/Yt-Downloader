@@ -1,0 +1,2 @@
+def UrlParse(url):
+     pass

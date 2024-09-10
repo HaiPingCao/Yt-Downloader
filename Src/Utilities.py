@@ -19,15 +19,14 @@ def Info(url):
         'noplaylist': True,
         'quiet': False,
     }
+
     with yt_dlp.YoutubeDL(i4o) as info:
         info_dict = info.extract_info(url, download=False)
-
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
         duration = info_dict.get('duration', None)
-
         surl = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
-    return video_title, webpage_url, duration, surl
+    return video_title, webpage_url, duration, surl, info_dict
 
 
 def DL(video_url, download_folder):
@@ -75,18 +74,6 @@ class MediaPlayer:
         elif command == "stop":
             self.player.stop()
 
-    # def play(self):
-    #     """Plays the media."""
-    #     self.player.play()
-
-    # def pause(self):
-    #     """Pauses the media."""
-    #     self.player.pause()
-
-    # def stop(self):
-    #     """Stops the media."""
-    #     self.player.stop()
-
     def set_volume(self, volume):
         """Sets the volume (0-100)."""
         self.player.audio_set_volume(volume)
@@ -124,7 +111,7 @@ class MediaPlayer:
         return self.player.get_state()
         
 def ST():
-    video_url: str = input("Url: ")
+    video_url: str =  "https://www.youtube.com/watch?v=0dhSm2n7Gc8" # input("Url: ")
     info: list = Info(video_url)
     player = MediaPlayer()
     player.open_media(info[3])
@@ -162,5 +149,5 @@ def ST():
         
 if __name__ == '__main__':
     
-    ST()
+    print(Info('https://www.youtube.com/watch?v=7eoPEWcd_RY')[3])
     

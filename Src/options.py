@@ -1,52 +1,46 @@
-
 options:dict = {
      'no_warnings': True,
      'ignoreerrors': True,
      'quiet': True,
+     'verbose': False,
 
      'abort_on_unavailable_fragments': True,
      'keepvideo': False,
 
-     'flat_list': True,
-     'noplaylist': True,
-
-     'postprocessors': [
-          {
-               'key': 'FFmpegExtractAudio',
-               'preferredcodec': 'mp3',
-               'preferredquality': '192',
-          }
-     ],
+     'flat_list': False,
+     'noplaylist': False,
 }
 
-def opts(mode:int, playlist:bool):
-     m_opts:dict = options.copy()
-     if mode == 0 & playlist == False:       #Debug
-          m_opts.update({
-               'no_warnings': False,
-               'ignoreerrors': False,
-               'quiet': False
-               })
-     elif mode == 1 & playlist == False:     #Information - No Playlist
-          m_opts.pop('postprocessors')
-     elif mode == 1 & playlist == True:      #Information - Playlist
-          m_opts.pop('postprocessors')
-     elif mode == 2 & playlist == False:     #Music - No Playlist
-          m_opts.update({
+def opts(mode:int, playlist:bool, debug:bool):
+     modified_options = options.copy()
+     # PLAYLIST ?
+     if playlist == False:
+          modified_options.update({
                'flat_list': True,
                'noplaylist': True
                })
-     elif mode == 2 & playlist == True:      #Music - Playlist
-          m_opts.update({
-               'flat_list': False,
-               'noplaylist': False,
-               })
+     # DEBUG
+     if debug == True:
+          modified_options.update({
+               'no_warnings': False,
+               'ignoreerrors': False,
+               'quiet': False,
+               'verbose': True
+          })
+     # MP3 DOWNLOAD
+     elif mode == 1:
+          modified_options['postprocessors']=[{
+               'key': 'FFmpegExtractAudio',
+               'preferredcodec': 'mp3',
+               'preferredquality': '192',
+          }]
+     #MP3 STREAM / INFO
+     elif mode == 2:
+          pass
 
-     return m_opts
+     return modified_options
 
 if __name__ == '__main__':
      print(f'\n{options}\n')
-     fn = opts(2, True)
+     fn = opts(mode=2, playlist=False, debug=True)
      print(fn)
-     # moptions = options.copy()
-     # print(moptions)
