@@ -30,17 +30,18 @@ def opts(mode:int, playlist:bool, debug:bool, download_folder:str = "\\Temp"):
                'verbose': True
           })
      # MP3 DOWNLOAD
-     # elif mode == 1:
-     #      modified_options['format'] = 'bestaudio/best'
-     #      modified_options['outtmpl'] = os.path.join(download_folder, '%(title)s.%(ext)s')
+     if mode == 1:
+          modified_options['format'] = 'bestaudio/best'
+          modified_options['outtmpl'] = os.path.join(download_folder, '%(title)s.%(ext)s')
           modified_options['postprocessors']=[{
-               'key': 'FFmpegExtractAudio',
-               'preferredcodec': 'mp3',
-               'preferredquality': '192',
-          }]
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+               }]
      #MP3 STREAM / INFO
      elif mode == 2:
           pass
+
      return modified_options
 
 if __name__ == '__main__':
