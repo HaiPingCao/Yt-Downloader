@@ -2,7 +2,7 @@ import Utilities
 
 
 tempf_path: str = "\\Temp"
-video_url: str = "https://www.youtube.com/watch?v=mEyyEcH53A0"  #input("Enter video URL: ")
+video_url: str = input("Enter video URL: ")
 
 if __name__ == '__main__':
     X = Utilities.Info(video_url)
@@ -11,7 +11,5 @@ if __name__ == '__main__':
         print(i)
     print('\n//////////////////////////\n')
 
-    # Utilities.MediaPlayer(X[3], X[2])
-    # Utilities.YtDownloader(video_url, tempf_path)
 
 
