@@ -1,15 +1,10 @@
-import Utilities
-
+import utilities
 
 tempf_path: str = "\\Temp"
-video_url: str = input("Enter video URL: ")
+video_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvPr_TbyHJYJ9OR5KbNRpgVK" # input("Enter video URL: ")
 
 if __name__ == '__main__':
-    X = Utilities.Info(video_url)
-
-    for i in X:
-        print(i)
-    print('\n//////////////////////////\n')
+    utilities.DL(video_url, tempf_path, playlist=True)
 
 
 
