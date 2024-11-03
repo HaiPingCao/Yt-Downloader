@@ -7,17 +7,17 @@ def Info(url):
     '''
     Return: video_title, webpage_url, duration, s_url
     '''
-    with yt_dlp.YoutubeDL(opts(mode=2, playlist=False, debug=False)) as info:
+    with yt_dlp.YoutubeDL(opts(mode=2, playlist=False, debug=True)) as info:
         info_dict = info.extract_info(url, download=False)
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
         duration = info_dict.get('duration', None)
         s_url = next(
-            (f['url'] for f in info_dict['requested_formats'] 
+            (f['url'] for f in info_dict['formats'] 
              if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
             None  # Default to None if no match is found
         )
-        # surl = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
+        # s_url = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
     return video_title, webpage_url, duration, s_url, info_dict
 
 def DL(video_url, download_folder, playlist=False):
