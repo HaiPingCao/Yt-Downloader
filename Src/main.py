@@ -1,14 +1,11 @@
 from core import utilities as ult
+from core import options as opts
 import re
 
 tempf_path: str = "\\Temp"
-video_url: str = "https://www.youtube.com/watch?v=LecuZccoWBs&list=RDGMEMCMFH2exzjBeE_zAHHJOdxgVMLecuZccoWBs&start_radio=1" # input("Enter video URL: ")
+video_url: str = "https://www.youtube.com/watch?v=sJXZ9Dok7u8&list=RDEug-A577g-U&index=3" # input("Enter video URL: ")
 
 if __name__ == '__main__':
-    # DOWNLOAD VIDEO
-    # ult.DL(video_url, tempf_path, playlist=True)
-    
-    
     # GET VIDEO INFO
     linktype = ult.LinkType(video_url)
     # print(linktype)
@@ -19,11 +16,21 @@ if __name__ == '__main__':
     4: User-created Playlist 
     0: Unknown or Unsupported YouTube Link 
     '''
-    linkparse = ult.LinkParse(video_url)
-    # print(linkparse)
-    # print("\n")
-    rdn = linkparse[1].get('start_radio', None)
-    for i in rdn:
-        print(i)
+    
+    if linktype == 1:
+        exit("Non youtube link is not supported yet")
+    
+    def RadioPlaylist(video_url):
+        LinkParse = ult.LinkParse(video_url)
+        try:
+            rdn = LinkParse[1].get('start_radio', None) or LinkParse[1].get('index', None)
+            for i in rdn:
+                print(i)
+                
+        except Exception as e:
+            print("Error: ", e)
+
+
+
 
 '''queue: link-> check if it's a playlist -> get radio id -> add to queue (radio id + 1 if end start from 0 to start id / end)'''
