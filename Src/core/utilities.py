@@ -1,13 +1,12 @@
 import yt_dlp
-import os
 from urllib.parse import urlparse, parse_qs
-from options import opts
+from core.options import opts
 
 def Info(url):
     '''
     Return: video_title, webpage_url, duration, s_url
     '''
-    with yt_dlp.YoutubeDL(opts(mode=2, playlist=False, debug=True)) as info:
+    with yt_dlp.YoutubeDL(opts(mode=2, playlist=False, debug=False)) as info:
         info_dict = info.extract_info(url, download=False)
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
@@ -25,7 +24,7 @@ def DL(video_url, download_folder, playlist=False):
         entry = Info(video_url)[1]
         ydl.download(entry)
 
-def url_parse(url):
+def LinkType(url):
     '''
     1: Radio Playlist 
     2: Video with Playlist 
@@ -58,8 +57,16 @@ def url_parse(url):
         return 4 # User-created Playlist Link
     # If it doesn't match any known YouTube link pattern
     return 0 # 'Unknown or Unsupported YouTube Link'
-        
-if __name__ == '__main__':
+
+
+def FolderExtConvert(IF, OF):
+    import os
+    import subprocess
     
-    print(Info('https://www.youtube.com/watch?v=ECn51ZLTdAQ')[3])
-    # print(opts(mode=1, playlist=False, debug=False, download_folder="C:\\Temp"))
+    for file in os.listdir(IF):
+        InputFolder = os.path.join(IF, file)
+        OutputFolder = os.path.join(OF, file).replace(
+            "mp4", "mp3")
+
+        command = f"ffmpeg -i \"{InputFolder}\" -vn -ab 128k -ar 44100 -y \"{OutputFolder}\""
+        subprocess.call(command, shell=True)

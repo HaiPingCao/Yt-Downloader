@@ -3,7 +3,7 @@ dir: str = os.getcwd()
 os.add_dll_directory(dir)
 import vlc
 import time
-from utilities import Info
+from core.utilities import Info
 
 
 class MediaPlayer:

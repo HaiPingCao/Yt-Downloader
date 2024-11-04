@@ -1,4 +1,4 @@
-import utilities
+import core.utilities as utilities
 
 tempf_path: str = "\\Temp"
 video_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvPr_TbyHJYJ9OR5KbNRpgVK" # input("Enter video URL: ")
