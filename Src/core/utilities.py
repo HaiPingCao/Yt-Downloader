@@ -1,6 +1,6 @@
 import yt_dlp
 from urllib.parse import urlparse, parse_qs
-from options import opts
+from core.options import opts
 
 def Info(url):
     '''
@@ -59,7 +59,15 @@ def LinkType(url):
     return 0 # 'Unknown or Unsupported YouTube Link'
 
 
-def FolderExtConvert(IF, OF):
+def LinkParse(url):
+    # Parse the URL into its components
+    parsed_url = urlparse(url)
+    # Get query parameters from the URL
+    query_params = parse_qs(parsed_url.query)
+    return parsed_url, query_params
+
+
+def FolderExtConverter(IF, OF):
     import os
     import subprocess
     
