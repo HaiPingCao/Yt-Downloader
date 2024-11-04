@@ -1,6 +1,6 @@
 import yt_dlp
 from urllib.parse import urlparse, parse_qs
-from core.options import opts
+from options import opts
 
 def Info(url):
     '''
