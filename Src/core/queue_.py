@@ -6,6 +6,6 @@ class queue(list):
 
      def add(self, url):
           self.append(url)
-          
+     
           ult.DL(url, ult.tempf_path, playlist=False)
           
