@@ -1,12 +1,17 @@
 import yt_dlp
 from urllib.parse import urlparse, parse_qs
-from core.options import opts
+# from core.options import opts
+from options import opts
 
-def Info(url):
+
+options = opts(mode=2, playlist=False, debug=False)
+
+
+def Info(url, option=options):
     '''
     Return: video_title, webpage_url, duration, s_url
     '''
-    with yt_dlp.YoutubeDL(opts(mode=2, playlist=False, debug=False)) as info:
+    with yt_dlp.YoutubeDL(option) as info:
         info_dict = info.extract_info(url, download=False)
         video_title = info_dict.get('title', None)
         webpage_url = info_dict.get('webpage_url', None)
@@ -58,14 +63,12 @@ def LinkType(url):
     # If it doesn't match any known YouTube link pattern
     return 0 # 'Unknown or Unsupported YouTube Link'
 
-
 def LinkParse(url):
     # Parse the URL into its components
     parsed_url = urlparse(url)
     # Get query parameters from the URL
     query_params = parse_qs(parsed_url.query)
     return parsed_url, query_params
-
 
 def FolderExtConverter(IF, OF):
     import os
@@ -75,6 +78,5 @@ def FolderExtConverter(IF, OF):
         InputFolder = os.path.join(IF, file)
         OutputFolder = os.path.join(OF, file).replace(
             "mp4", "mp3")
-
         command = f"ffmpeg -i \"{InputFolder}\" -vn -ab 128k -ar 44100 -y \"{OutputFolder}\""
         subprocess.call(command, shell=True)
