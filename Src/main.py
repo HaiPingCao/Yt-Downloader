@@ -16,12 +16,6 @@ if __name__ == '__main__':
     ''' 
     if linktype == 1:
         exit("Non youtube link is not supported yet")
-        
-        
-        
-        
-
-
 
 
 
