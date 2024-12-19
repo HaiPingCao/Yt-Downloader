@@ -1,8 +1,8 @@
 from core import utilities as ult
-import re
+# import re
 
 tempf_path: str = "\\Temp"
-video_url: str = "https://www.youtube.com/watch?v=sJXZ9Dok7u8&list=RDEug-A577g-U&index=3" # input("Enter video URL: ")
+video_url: str = "https://www.youtube.com/watch?v=nEoAFBwbYzw" # input("Enter video URL: ")
 
 if __name__ == '__main__':
     # GET VIDEO INFO
@@ -16,7 +16,10 @@ if __name__ == '__main__':
     ''' 
     if linktype == 1:
         exit("Non youtube link is not supported yet")
+    else:
+        video_info = ult.Info(video_url)
+        print(video_info[0], video_info[1], video_info[2], video_info[3], video_info[4])
 
 
 
-'''queue: link-> check if it's a playlist -> get radio id -> add to queue (radio id + 1 if end start from 0 to start id / end)'''
+# '''queue: link-> check if it's a playlist -> get radio id -> add to queue (radio id + 1 if end start from 0 to start id / end)'''

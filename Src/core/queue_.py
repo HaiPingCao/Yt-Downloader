@@ -1,6 +1,6 @@
-# from core import utilities as ult
+from core import utilities as ult
 import random
-import utilities as ult
+# import utilities as ult
 
 lst = []
 
@@ -67,13 +67,13 @@ queue.append("-sdsda")
 queue.append("-dhjts")
 queue.append("-bbcxc")
 
-print("#### - ",queue)
-print(queue.shuffle())
-print("#### - ",queue)
-print(queue.prev())
-print("#### - ",queue)
-print(queue.__next__())
-print("#### - ",queue)
+# print("#### - ",queue)
+# print(queue.shuffle())
+# print("#### - ",queue)
+# print(queue.prev())
+# print("#### - ",queue)
+# print(queue.__next__())
+# print("#### - ",queue)
 # print(queue.add_queue("123456"))
 # print(queue.nowplaying())
 
