@@ -18,7 +18,7 @@ def Info(url, option=options):
             duration = info_dict.get('duration', None)
             s_url = next(
                 (f['url'] for f in info_dict['formats'] 
-                 if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
+                    if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
                 None  # Default to None if no match is found
             )
             # s_url = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
