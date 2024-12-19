@@ -14,8 +14,8 @@ options:dict = {
     'noplaylist': False,
 }
 
-def opts(mode:int, playlist:bool, debug:bool, download_folder:str = "\\Temp"):
-    '''mode [1/2] - playlist [True/False] - debug [True/False] - download_folder [str]'''
+def Options(mode:int, playlist:bool, debug:bool, download_folder:str = "\\Temp"):
+    '''mode [1-DL/2-INFO] - playlist [True/False] - debug [True/False] - download_folder [str]'''
     modified_options = options.copy()
     # PLAYLIST ?
     if playlist == False:

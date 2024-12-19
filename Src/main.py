@@ -18,8 +18,4 @@ if __name__ == '__main__':
         exit("Non youtube link is not supported yet")
     else:
         video_info = ult.Info(video_url)
-        print(video_info[0], video_info[1], video_info[2], video_info[3], video_info[4])
-
-
-
-# '''queue: link-> check if it's a playlist -> get radio id -> add to queue (radio id + 1 if end start from 0 to start id / end)'''
+        print(f"{video_info[0]}\n{video_info[1]}\n{video_info[2]}\n{video_info[3]}")
