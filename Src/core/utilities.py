@@ -1,7 +1,7 @@
 import yt_dlp
 from urllib.parse import urlparse, parse_qs
-# from core.options import opts
-from options import opts
+from core.options import opts
+# from options import opts
 
 
 options = opts(mode=2, playlist=False, debug=False)

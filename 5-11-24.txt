@@ -1,8 +1,0 @@
-Personal Inentity
-	- Gender.
-	- Age.
-	- Social status
-		- Employment.
-		- Marital status
-	- Life event
-     
