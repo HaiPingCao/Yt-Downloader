@@ -20,7 +20,7 @@ def Options(
     debug:bool, 
     download_folder:str = "\\Temp"
     ):
-    
+
     '''mode [1-DL/2-INFO] - playlist [True/False] - debug [True/False] - download_folder [str]'''
     modified_options = options.copy()
     # PLAYLIST ?
