@@ -27,7 +27,7 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
 def Download(video_url, download_folder, playlist=False):
     with yt_dlp.YoutubeDL(
         Options(
-            mode=1, 
+            mode=1,
             playlist=playlist, 
             debug=True, 
             download_folder=download_folder
