@@ -3,7 +3,7 @@ from core.options import Options
 # import re
 
 tempf_path: str = "\\Temp"
-yt_url: str = "https://www.outube.com/watch?v=nEoAFBwbYzw" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/watch?v=nEoAFBwbYzw" # input("Enter video URL: ")
 
 
 def ToBeExcute(link = yt_url):
