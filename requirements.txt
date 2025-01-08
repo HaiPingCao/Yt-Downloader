@@ -1,3 +1,4 @@
 # requirements.txt
 
+pytube==15.0.0
 yt-dlp==2024.12.23

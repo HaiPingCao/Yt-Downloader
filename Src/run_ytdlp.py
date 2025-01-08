@@ -4,7 +4,7 @@ import yt_dlp
 # import re
 
 tempf_path: str = "\\Temp"
-yt_url: str = "https://www.youtube.com/watch?v=nEoAFBwbYzw" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/watch?v=mQ1ycOl48Hc" # input("Enter video URL: ")
 
 
 def main(link = yt_url):
@@ -19,7 +19,8 @@ def main(link = yt_url):
         elif ck_link == "VP" or "RD" or "UL":
             pass
         # Get the video information
-        info = yt_utils.Info(link)
+        option = Options(mode=2, playlist=True, debug=True)
+        info = yt_utils.Info(url=link, option=option)
         print(f"Video Title: {info[0]},\nWebpage URL: {info[1]},\nDuration: {info[2]}\nAudio URL: {info[3]},\n")
     except Exception as e:
         print(f"Error: {e}")
