@@ -1,18 +1,41 @@
-from core import utilities as ult
-import re
+from core import yt_utils as ult
+from core.options import Options
+# import re
 
 tempf_path: str = "\\Temp"
-video_url: str = "https://www.youtube.com/watch?v=WPl10ZrhCtk&list=RDOIBODIPC_8Y&index=2" # input("Enter video URL: ")
+yt_url: str = "https://www.outube.com/watch?v=nEoAFBwbYzw" # input("Enter video URL: ")
+
+
+def ToBeExcute(link = yt_url):
+    # Check if the link is a youtube link / link type
+    ck_link = ult.LinkType(link)
+    if ck_link == "NL" :
+        print("Not a youtube link, try again")
+        ToBeExcute()
+    elif ck_link == "VP" or "RD" or "UL":
+        pass
+    # Get the video information
+    info = ult.Info(link)
+    print(f"Video Title: {info[0]},\nWebpage URL: {info[1]},\nDuration: {info[2]}\nAudio URL: {info[3]},\n")
+
+
+def YN(ans = str(input())):
+    if ans.lower() == "y":
+        return True
+    elif ans.lower() == "n":
+        return False
+    elif ans.lower() == "q":
+        exit()
+    else:
+        print("(Y)es,(N)o or (Q)uit?")
+        YN()
+
+
+def CustomErrorHandler(dl_path: str = tempf_path, video_url: str = yt_url):
+    try:
+        ToBeExcute()
+    except Exception as e:
+        print(f"Error: {e}")
 
 if __name__ == '__main__':
-    # GET VIDEO INFO
-    linktype = ult.LinkType(video_url)
-    '''
-    1: Radio Playlist 
-    2: Video with Playlist 
-    3: Normal video link 
-    4: User-created Playlist 
-    0: Unknown or Unsupported YouTube Link 
-    ''' 
-    if linktype == 1:
-        exit("Non youtube link is not supported yet")
+    CustomErrorHandler(video_url=yt_url)
