@@ -1,11 +1,13 @@
 from urllib.parse import urlparse, parse_qs
 
+
 def LinkParse(url):
      # Parse the URL into its components
      parsed_url = urlparse(url)
      # Get query parameters from the URL
      query_params = parse_qs(parsed_url.query)
      return parsed_url, query_params
+
 
 def LinkType(url):
      '''
@@ -18,7 +20,7 @@ def LinkType(url):
      parsed = LinkParse(url)
      parsed_url = parsed[0]
      query_params = parsed[1]
-     
+
      if parsed_url.netloc != 'www.youtube.com': return "NL"
      if parsed_url.path == '/watch':
           if 'v' in query_params:
