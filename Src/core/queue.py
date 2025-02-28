@@ -32,10 +32,10 @@ class Queue(list):
           '''Add Function'''
           nsong = self.extend()
           pass
-     
+
      def nowplaying(self):
           return self[self.now_playing]
-     
+
      def suffle(self):
           '''
           new queue = current song list(currentsong+1)
@@ -45,11 +45,25 @@ class Queue(list):
           new_queue = self[self.now_playing+1:]
           random.shuffle(new_queue)
           self[self.now_playing+1:] = new_queue
-          
+
      def previous(self):
           if self.loop == 1:
+               '''
+               If loop 1 track is playing, return the current track.
+               '''
                return self[self.now_playing]
           elif self.loop == 2:
-               return self[self.now_playing-1]
+               '''
+               If loop 2 track is playing, return the next previous track.
+               '''
+               if self.now_playing == 0:
+                    self.now_playing = len(self) - 2
+                    return self[len(self) - 1]
+               self.now_playing -= 2
+               return self[self.now_playing + 1]
           else:
-               return self[self.now_playing-1]
+               self.now_playing -= 2
+               if self.now_playing+1 >= 0:
+                    return self[self.now_playing+1]
+               else:
+                    self.now_playing += 2
