@@ -28,7 +28,7 @@ def Info(url, option=options):
     return video_title, webpage_url, duration, s_url, info_dict
 
 def DL(video_url, download_folder, playlist=False):
-    with yt_dlp.YoutubeDL(opts(mode=1, playlist=playlist, debug=True, download_folder=download_folder)) as ydl:
+    with yt_dlp.YoutubeDL(Options(mode=1, playlist=playlist, debug=True, download_folder=download_folder)) as ydl:
         entry = Info(video_url)[1]
         ydl.download(entry)
 
