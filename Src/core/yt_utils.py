@@ -21,7 +21,13 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
     except yt_dlp.utils.DownloadError as e:
         print(f"Error extracting info: {e}")
         return None, None, None, None, None
-    return video_title, webpage_url, duration, s_url, info_dict
+    return {
+        'video_title': video_title, 
+        'webpage_url': webpage_url, 
+        'duration': duration, 
+        'sound_url': s_url, 
+        'full_info': info_dict
+        }
 
 
 def Download(video_url, download_folder, playlist=False):

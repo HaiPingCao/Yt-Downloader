@@ -2,9 +2,10 @@ from core import yt_utils, link_utils
 from core.options import Options
 import yt_dlp
 # import re
+# py -3 -m pip install -U --pre "yt-dlp[default]"
 
 tempf_path: str = "\\Temp"
-yt_url: str = "https://www.youtube.com/watch?v=mQ1ycOl48Hc" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
 
 
 def main(link = yt_url):
@@ -19,9 +20,9 @@ def main(link = yt_url):
         elif ck_link == "VP" or "RD" or "UL":
             pass
         # Get the video information
-        option = Options(mode=2, playlist=True, debug=True)
+        option = Options(mode=2, playlist=True, debug=False)
         info = yt_utils.Info(url=link, option=option)
-        print(f"Video Title: {info[0]},\nWebpage URL: {info[1]},\nDuration: {info[2]}\nAudio URL: {info[3]},\n")
+        print(f"Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')*0.001)}\nAudio URL: {info.get('sound_url')},\n")
     except Exception as e:
         print(f"Error: {e}")
 
