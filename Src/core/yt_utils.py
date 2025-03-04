@@ -15,12 +15,37 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
             s_url = next(
                 (f['url'] for f in info_dict['formats'] 
                     if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
-                None  # Default to None if no match is found
+                # None  # Default to None if no match is found
             )
-            # s_url = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
+            
+            if "entries" in info_dict:
+                print(f"==========>{info_dict["entries"][0]}")
+            #     for entry in info_dict["entries"]:
+            #         print(entry)
+            
+            # '''
+            # # Loop through all available formats
+            # for format in info_dict['formats']:
+            #     # Check if this is an audio-only m4a or webm format
+            #     is_audio_format = format['ext'] in ['m4a', 'webm']
+            #     is_audio_only = format.get('vcodec') == 'none'
+                
+            #     # If we found an audio-only format we want
+            #     if is_audio_format and is_audio_only:
+            #         # Return its URL
+            #         audio_url = format['url']
+            #         break
+            # '''
     except yt_dlp.utils.DownloadError as e:
         print(f"Error extracting info: {e}")
-        return None, None, None, None, None
+        return {
+            'video_title': None, 
+            'webpage_url': None, 
+            'duration': None, 
+            'sound_url': None, 
+            'full_info': None
+            }
+
     return {
         'video_title': video_title, 
         'webpage_url': webpage_url, 

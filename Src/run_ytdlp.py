@@ -2,11 +2,12 @@ from core import yt_utils, link_utils
 from core.options import Options
 import yt_dlp
 # import re
-# py -3 -m pip install -U --pre "yt-dlp[default]"
+
 
 tempf_path: str = "\\Temp"
+# yt_url: str = input("Enter video URL: ")
 # yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
-yt_url: str = "https://www.youtube.com/watch?v=mZ3moeGlYc4&list=PLKXe1HzhulvM9ZeYXEtAyXB4LGW9IhpVa&pp=gAQB" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvM9ZeYXEtAyXB4LGW9IhpVa"
 
 
 def main(link = yt_url):
@@ -25,10 +26,12 @@ def main(link = yt_url):
         info = yt_utils.Info(url=link, option=option)
         for i in info:
             print(i)
-        print(f"Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')/60)}s\nAudio URL: {info.get('sound_url')},\n")
+        print("====================================================================================================")
+        print(f'Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')/60)}s\nAudio URL: {info.get('sound_url')},\n')
+        # print(info.get('full_info'))
+        print("====================================================================================================")
     except Exception as e:
         print(f"Error: {e}")
-
 
 
 def YN(ans):
@@ -41,7 +44,6 @@ def YN(ans):
         exit()
     else:
         YN()
-
 
 
 if __name__ == '__main__':
