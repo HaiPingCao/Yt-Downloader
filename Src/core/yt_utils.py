@@ -9,50 +9,39 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
     try:
         with yt_dlp.YoutubeDL(option) as info:
             info_dict = info.extract_info(url, download=False)
-            video_title = info_dict.get('title', None)
-            webpage_url = info_dict.get('webpage_url', None)
-            duration = info_dict.get('duration', None)
-            s_url = next(
-                (f['url'] for f in info_dict['formats'] 
-                    if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
-                # None  # Default to None if no match is found
-            )
+            return_list = []
             
-            if "entries" in info_dict:
-                print(f"==========>{info_dict["entries"][0]}")
-            #     for entry in info_dict["entries"]:
-            #         print(entry)
+            if 'entries' not in info_dict or not info_dict['entries']:
+                video_title = info_dict.get('title', None)
+                webpage_url = info_dict.get('webpage_url', None)
+                duration = info_dict.get('duration', None)
+                sound = next(
+                    (f['url'] for f in info_dict['formats'] 
+                        if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
+                    None  # Default to None if no match is found
+                )
+                return_list.append((video_title, webpage_url, duration, sound))
+                return return_list
             
-            # '''
-            # # Loop through all available formats
-            # for format in info_dict['formats']:
-            #     # Check if this is an audio-only m4a or webm format
-            #     is_audio_format = format['ext'] in ['m4a', 'webm']
-            #     is_audio_only = format.get('vcodec') == 'none'
-                
-            #     # If we found an audio-only format we want
-            #     if is_audio_format and is_audio_only:
-            #         # Return its URL
-            #         audio_url = format['url']
-            #         break
-            # '''
+            for entry in info_dict['entries']:
+                video_title = entry.get('title', None)
+                webpage_url = entry.get('webpage_url', None)
+                duration = entry.get('duration', None)
+                sound = next(
+                    (f['url'] for f in entry['formats'] 
+                        if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),
+                    None 
+                )
+                return_list.append((video_title, webpage_url, duration, sound))
+            return return_list
+            # return video_title, webpage_url, duration, sound
+                    
+   
+
+
     except yt_dlp.utils.DownloadError as e:
         print(f"Error extracting info: {e}")
-        return {
-            'video_title': None, 
-            'webpage_url': None, 
-            'duration': None, 
-            'sound_url': None, 
-            'full_info': None
-            }
-
-    return {
-        'video_title': video_title, 
-        'webpage_url': webpage_url, 
-        'duration': duration, 
-        'sound_url': s_url, 
-        'full_info': info_dict
-        }
+        return None
 
 
 def Download(video_url, download_folder, playlist=False):
