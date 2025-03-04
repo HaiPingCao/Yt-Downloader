@@ -44,18 +44,11 @@ def fn1(link = yt_url):
     except Exception as e:
         print(f"Error: {e}")
 
-# def fn2():
-    
-#     _queue.add("https://www.youtube.com/watch?v=nl28drtdzpc")
-    
-#     print(_queue)
-    
     
 
 
 def main(link = yt_url):
     fn1(link)
-    # fn2()
 
 if __name__ == '__main__':
     main(link=yt_url)
