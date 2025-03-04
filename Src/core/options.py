@@ -6,7 +6,6 @@ options:dict = {
     'ignoreerrors': True,
     'quiet': True,
     'verbose': False,
-    'extract_flat': True,
 
     'abort_on_unavailable_fragments': True,
     'keepvideo': False,

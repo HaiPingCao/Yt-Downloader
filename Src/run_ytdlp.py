@@ -2,7 +2,7 @@ from core import yt_utils, link_utils
 from core.options import Options
 import yt_dlp
 # import re
-
+# py -3 -m pip install -U --pre "yt-dlp[default]"
 
 tempf_path: str = "\\Temp"
 yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
@@ -43,6 +43,7 @@ def main(link = yt_url):
 #         exit()
 #     else:
 #         YN()
+
 
 if __name__ == '__main__':
     main(link=yt_url)
