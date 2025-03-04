@@ -29,8 +29,9 @@ class Queue(list):
           return self[self.now_playing:]
 
      def add(self, song): 
+          '''Add Function'''
           nsong = self.extend()
-          return nsong
+          pass
 
      def nowplaying(self):
           return self[self.now_playing]
@@ -66,16 +67,3 @@ class Queue(list):
                     return self[self.now_playing+1]
                else:
                     self.now_playing += 2
-
-     def __next__(self):
-          self.now_playing += 1
-          if self.loop == 1:
-               if self.now_playing  != 0:
-                    self.now_playing -=1
-          elif self.loop == 2:
-               if self.now_playing == len(self):
-                    self.now_playing = 0
-          if self.now_playing >= len(self):
-               self.now_playing = len(self) - 1
-               return None
-          return self[self.now_playing]

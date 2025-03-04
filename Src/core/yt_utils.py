@@ -9,25 +9,38 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
     try:
         with yt_dlp.YoutubeDL(option) as info:
             info_dict = info.extract_info(url, download=False)
-            video_title = info_dict.get('title', None)
-            webpage_url = info_dict.get('webpage_url', None)
-            duration = info_dict.get('duration', None)
-            s_url = next(
-                (f['url'] for f in info_dict['formats'] 
-                    if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
-                None  # Default to None if no match is found
-            )
-            # s_url = next(f['url'] for f in info_dict['requested_formats'] if f['ext'] in ['m4a', 'webm'])
+            return_list = []
+            
+            if info_dict['entries']:
+                for entry in info_dict['entries']:
+                    video_title = entry.get('title', None)
+                    webpage_url = entry.get('webpage_url', None)
+                    duration = entry.get('duration', None)
+                    sound = next(
+                        (f['url'] for f in entry['formats'] 
+                            if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),
+                        None 
+                    )
+                    return_list.append((video_title, webpage_url, duration, sound))
+                return return_list
+                # return video_title, webpage_url, duration, sound
+                    
+
+            else:     
+                video_title = info_dict.get('title', None)
+                webpage_url = info_dict.get('webpage_url', None)
+                duration = info_dict.get('duration', None)
+                sound = next(
+                    (f['url'] for f in info_dict['formats'] 
+                        if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),  # Check that there is no video track
+                    None  # Default to None if no match is found
+                )
+                return_list.append((video_title, webpage_url, duration, sound))
+                return return_list
+
     except yt_dlp.utils.DownloadError as e:
         print(f"Error extracting info: {e}")
-        return None, None, None, None, None
-    return {
-        'video_title': video_title, 
-        'webpage_url': webpage_url, 
-        'duration': duration, 
-        'sound_url': s_url, 
-        'full_info': info_dict
-        }
+        return None
 
 
 def Download(video_url, download_folder, playlist=False):
@@ -40,3 +53,16 @@ def Download(video_url, download_folder, playlist=False):
             )) as ydl:
         entry = Info(video_url)[1]
         ydl.download(entry)
+
+
+def IFPL(url, option=Options(mode=2, playlist=False, debug=False)):
+    '''
+    return: video_title, webpage_url, duration, s_url, info_dict
+    '''
+    try:
+        with yt_dlp.YoutubeDL(option) as info:
+            info_dict = info.extract_info(url, download=False)
+    except Exception as error:
+        print(f"Error extracting info: {error}")
+        return None
+    return info_dict

@@ -6,10 +6,24 @@ import yt_dlp
 
 tempf_path: str = "\\Temp"
 # yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
-yt_url: str = "https://www.youtube.com/watch?v=mZ3moeGlYc4&list=PLKXe1HzhulvM9ZeYXEtAyXB4LGW9IhpVa&pp=gAQB" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvM7IuvwKMp_odaqg7VjFvJ5" # input("Enter video URL: ")
 
 
 def main(link = yt_url):
+    # info = yt_utils.Info(url=link)
+    # for i in info['entries']:
+    #     sound = next((f['url'] for f in i['formats'] if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'), None)
+    #     video_title = i.get('title', None)
+    #     webpage_url = i.get('webpage_url', None)
+    #     duration = i.get('duration', None)
+        
+    #     print(sound)
+    #     print(video_title)
+    #     print(webpage_url)
+    #     print(duration)
+    
+    
+    
     try:
         # Check if the link is a youtube link / link type
         ck_link = link_utils.LinkType(link)
@@ -21,11 +35,16 @@ def main(link = yt_url):
         elif ck_link == "VP" or "RD" or "UL":
             pass
         # Get the video information
-        option = Options(mode=2, playlist=True, debug=True)
+        option = Options(mode=2, playlist=True, debug=False)
         info = yt_utils.Info(url=link, option=option)
-        for i in info:
-            print(i)
-        print(f"Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')/60)}s\nAudio URL: {info.get('sound_url')},\n")
+        # print(info)
+        for inf in range(0, len(info)):
+            print(info[inf])
+            inf +=1
+        
+        
+        
+        # print(f"Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')/60)}s\nAudio URL: {info.get('sound_url')},\n")
     except Exception as e:
         print(f"Error: {e}")
 
