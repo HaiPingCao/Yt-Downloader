@@ -5,35 +5,21 @@ import yt_dlp
 # py -3 -m pip install -U --pre "yt-dlp[default]"
 
 tempf_path: str = "\\Temp"
-# yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
-yt_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvM7IuvwKMp_odaqg7VjFvJ5" # input("Enter video URL: ")
+yt_url: str = "https://www.youtube.com/watch?v=nl28drtdzpc" # input("Enter video URL: ")
+# yt_url: str = "https://www.youtube.com/playlist?list=PLKXe1HzhulvM7IuvwKMp_odaqg7VjFvJ5" # input("Enter video URL: ")
 
 
 def main(link = yt_url):
-    # info = yt_utils.Info(url=link)
-    # for i in info['entries']:
-    #     sound = next((f['url'] for f in i['formats'] if f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'), None)
-    #     video_title = i.get('title', None)
-    #     webpage_url = i.get('webpage_url', None)
-    #     duration = i.get('duration', None)
-        
-    #     print(sound)
-    #     print(video_title)
-    #     print(webpage_url)
-    #     print(duration)
-    
-    
-    
     try:
-        # Check if the link is a youtube link / link type
-        ck_link = link_utils.LinkType(link)
-        if ck_link == "NL" :
-            print(f"Not a youtube link {ck_link}, try again ? ")
-            retry = str(input("(Y)es,(N)o or (Q)uit?"))
-            YN(retry)
-            main()
-        elif ck_link == "VP" or "RD" or "UL":
-            pass
+        # # Check if the link is a youtube link / link type
+        # ck_link = link_utils.LinkType(link)
+        # if ck_link == "NL" :
+        #     print(f"Not a youtube link {ck_link}, try again ? ")
+        #     retry = str(input("(Y)es,(N)o or (Q)uit?"))
+        #     YN(retry)
+        #     main()
+        # elif ck_link == "VP" or "RD" or "UL":
+        #     pass
         # Get the video information
         option = Options(mode=2, playlist=True, debug=False)
         info = yt_utils.Info(url=link, option=option)
@@ -42,25 +28,21 @@ def main(link = yt_url):
             print(info[inf])
             inf +=1
         
-        
-        
         # print(f"Video Title: {info.get('video_title')},\nWebpage URL: {info.get('webpage_url')},\nDuration: {(info.get('duration')/60)}s\nAudio URL: {info.get('sound_url')},\n")
     except Exception as e:
         print(f"Error: {e}")
 
 
-
-def YN(ans):
-    # str(input("(Y)es,(N)o or (Q)uit?"))
-    if ans.lower() == "y":
-        return True
-    elif ans.lower() == "n":
-        return False
-    elif ans.lower() == "q":
-        exit()
-    else:
-        YN()
-
+# def YN(ans):
+#     # str(input("(Y)es,(N)o or (Q)uit?"))
+#     if ans.lower() == "y":
+#         return True
+#     elif ans.lower() == "n":
+#         return False
+#     elif ans.lower() == "q":
+#         exit()
+#     else:
+#         YN()
 
 
 if __name__ == '__main__':
