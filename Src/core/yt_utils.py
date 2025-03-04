@@ -11,7 +11,7 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
             info_dict = info.extract_info(url, download=False)
             return_list = []
             
-            if not info_dict['entries']:
+            if 'entries' not in info_dict or not info_dict['entries']:
                 video_title = info_dict.get('title', None)
                 webpage_url = info_dict.get('webpage_url', None)
                 duration = info_dict.get('duration', None)
@@ -22,7 +22,6 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
                 )
                 return_list.append((video_title, webpage_url, duration, sound))
                 return return_list
-            
             
             for entry in info_dict['entries']:
                 video_title = entry.get('title', None)
