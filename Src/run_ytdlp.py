@@ -31,13 +31,13 @@ def fn1(link = yt_url):
         print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         print(_queue.nowplaying())
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        _queue.next()
+        _queue.__next__()
         print(_queue.nowplaying())
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        _queue.next()
+        _queue.__next__()
         print(_queue.nowplaying())
         print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
-        _queue.next()
+        _queue.__next__()
         print(_queue.nowplaying())
         
         
@@ -45,10 +45,45 @@ def fn1(link = yt_url):
         print(f"Error: {e}")
 
     
+def fn2():
+    try:
+        _queue = queue.Queue()
+        _queue.loop = 1
+        test_list = [1, 2, 3, 4, 5]
+        for i in range(0, len(test_list)):
+            _queue.add(test_list[i])
+            i +=1
+            
+        # print(_queue)
+        # print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        # _queue.shuffle()
+        # print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+        # print(_queue)
+        
+        print("++++++++++++++++++++")
+        print(_queue.nowplaying())
+        print("+++++++++++++++++++++")
+        _queue.__next__()
+        print(_queue.nowplaying())
+        print("+++++++++++++++++++++")
+        _queue.__next__()
+        print(_queue.nowplaying())
+        print("+++++++++++++++++++++")
+        _queue.__next__()
+        print(_queue.nowplaying())
+        print("+++++++++++++++++++++")
+        _queue.__next__()
+        print(_queue.nowplaying())
+            
+            
+            
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def main(link = yt_url):
-    fn1(link)
+    # fn1(link)
+    fn2()
 
 if __name__ == '__main__':
     main(link=yt_url)

@@ -90,13 +90,16 @@ class Queue(list):
             else:
                 self.now_playing += 2
 
-    def next(self):
+    def __next__(self):
         """
         Move to the next track based on loop mode.
         
         Returns:
             Next track or None if no more tracks
         """
+        if self.now_playing == -1:
+            self.now_playing = 0
+            return self[0]
         self.now_playing += 1
 
         if self.loop == 1:
