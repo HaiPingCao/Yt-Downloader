@@ -30,7 +30,7 @@ def main():
         
         # INSERT DATA
         dat = """
-            INSERT INTO METADATA (id, title, duration, url, sound_url)
+            INSERT INTO METADATA (title, duration, url, sound_url)
             VALUES (?, ?, ?, ?)
             """
         
