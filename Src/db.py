@@ -37,7 +37,10 @@ def main():
         cur.execute(dat, (name, dur, url, s_url))
         db.commit()
         
-        cur.execute("SELECT * FROM METADATA")
+        # FETCH DATA
+        cur.execute("SELECT * FROM METADATA")       # SELECT ALL
+        cur.execute("SELECT title FROM METADATA")   # SELECT title
+        
         result = cur.fetchall()
         for row in result:
             print(row)
