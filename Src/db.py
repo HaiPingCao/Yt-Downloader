@@ -12,19 +12,17 @@ def main():
         
         # Execute db query cmd
         table = """CREATE TABLE IF NOT EXISTS METADATA (
-            id INTEGER NOT NULL,
             title VARCHAR(100),
             duration INTEGER, 
             url VARCHAR(100), 
             sound_url VARCHAR(255),
-            PRIMARY KEY (id)
+            PRIMARY KEY (title)
         );"""
         
         cur.execute(table)
         db.commit()
         
         # SAMPLE DATA
-        index = 1
         name = "Video from YT"
         url = "yt.c/123"
         dur = 40
@@ -33,10 +31,10 @@ def main():
         # INSERT DATA
         dat = """
             INSERT INTO METADATA (id, title, duration, url, sound_url)
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?)
             """
         
-        cur.execute(dat, (index, name, dur, url, s_url))
+        cur.execute(dat, (name, dur, url, s_url))
         db.commit()
         
         cur.execute("SELECT * FROM METADATA")
