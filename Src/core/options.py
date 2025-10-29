@@ -18,10 +18,17 @@ def Options(
     mode:int, 
     playlist:bool, 
     debug:bool, 
-    download_folder:str = "\\Temp"
+    download_folder:str = "\\Temp",
+    playlist_items_index:str = "1-20"
     ):
 
-    '''mode [1-DL/2-INFO] - playlist [True/False] - debug [True/False] - download_folder [str]'''
+    '''
+    mode:int (1: download mp3, 2: info)\n
+    playlist:boolean\n
+    debug:boolean \n
+    download_folder:str\n
+    playlist_items_index:str (default: "1-20", set to "" for full playlist)\n
+    '''
     modified_options = options.copy()
     # PLAYLIST ?
     if playlist == False:
@@ -36,16 +43,20 @@ def Options(
             'quiet': False,
             'verbose': True
         })
-    # MP3 DOWNLOAD
+    #MP3 STREAM / INFO
     if mode == 1:
+        pass
+    
+    # MP3 DOWNLOAD
+    elif mode == 2:
         modified_options['outtmpl'] = os.path.join(download_folder, '%(title)s.%(ext)s')
         modified_options['postprocessors']=[{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }]
-    #MP3 STREAM / INFO
-    elif mode == 2:
-        pass
+    # PLAYLIST ITEMS INDEX
+    if playlist_items_index != "":
+        modified_options['playlist_items'] = playlist_items_index
 
     return modified_options
