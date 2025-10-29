@@ -1,9 +1,10 @@
+import json
 import yt_dlp
 from core.options import Options
 from yt_dlp.utils import DownloadError
 
 
-def Info(url, option=Options(mode=2, playlist=False, debug=False)):
+def Info(url, option=Options(mode=2, playlist=False, debug=False), write_json:bool=False):
     '''
     return: video_title, webpage_url, duration, sound_url, info_dict
     '''
@@ -25,6 +26,9 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False)):
                          if f and 'ext' in f and 'url' in f and f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),
                         None
                     )
+                if write_json:
+                    with open("info_list.json", "w") as f:
+                        json.dump(info_dict, f, indent=4)
                 return_list.append((video_title, webpage_url, duration, sound))
             
             return return_list

@@ -6,6 +6,14 @@ options:dict = {
     'ignoreerrors': True,
     'quiet': True,
     'verbose': False,
+    'simulate': True,
+    
+    'print_to_file': {
+        'video': [
+            ('%()j', '%(id)s.json'),  # JSON per video
+            ('%(webpage_url)s', 'buffer.json')  # All URLs in one file
+        ]
+    },
 
     'abort_on_unavailable_fragments': True,
     'keepvideo': False,
@@ -49,6 +57,7 @@ def Options(
     
     # MP3 DOWNLOAD
     elif mode == 2:
+        modified_options['simulate'] = False
         modified_options['outtmpl'] = os.path.join(download_folder, '%(title)s.%(ext)s')
         modified_options['postprocessors']=[{
                 'key': 'FFmpegExtractAudio',
