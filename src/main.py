@@ -1,17 +1,18 @@
 from core.yt import Info
-from core.options import Options
+from core.yt_options import Options
 
 
 def run_yt():    
-     url = "https://www.youtube.com/watch?v=Lotg1En0EFU&list=RDLotg1En0EFU&start_radio=1"
+     url = "https://music.youtube.com/watch?v=hE-XxWeYhPY&si=4tE2JPKgW90oRrpa"
 
      # options = Options(mode=2, playlist=True, debug=True, playlist_items_index="1-5")
      # info = Info(url, options, write_json=True)
 
      
-     for i in range(1,5):
+     for i in range(1,2):
           options = Options(mode=2, playlist=True, debug=False, playlist_items_index=f"{i}-{i}")
-          info = Info(url, options)
+          info = Info(url, options, write_json=True)
+          print()
           print(info)
 
 if __name__ == '__main__':

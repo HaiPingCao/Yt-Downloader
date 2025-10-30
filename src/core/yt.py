@@ -1,6 +1,6 @@
 import json
 import yt_dlp
-from core.options import Options
+from core.yt_options import Options
 from yt_dlp.utils import DownloadError
 
 

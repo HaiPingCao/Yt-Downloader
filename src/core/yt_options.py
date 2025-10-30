@@ -8,12 +8,8 @@ options:dict = {
     'verbose': False,
     'simulate': True,
     
-    'print_to_file': {
-        'video': [
-            ('%()j', '%(id)s.json'),  # JSON per video
-            ('%(webpage_url)s', 'buffer.json')  # All URLs in one file
-        ]
-    },
+    'formats': 'bestaudio/best', 
+    'audioformat': 'best',   
 
     'abort_on_unavailable_fragments': True,
     'keepvideo': False,
