@@ -36,15 +36,3 @@ def Info(url, option=Options(mode=2, playlist=False, debug=False), write_json:bo
     except DownloadError as e:
         print(f"Error extracting info: {e}")
         return []
-
-
-# def Download(video_url, download_folder, playlist=False):
-#     with yt_dlp.YoutubeDL(
-#         Options(
-#             mode=1,
-#             playlist=playlist, 
-#             debug=True, 
-#             download_folder=download_folder
-#             )) as ydl:
-#         entry = Info(video_url)[1]
-#         ydl.download(entry)
