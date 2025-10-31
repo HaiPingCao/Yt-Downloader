@@ -4,7 +4,7 @@ from core.yt_options import Options
 from yt_dlp.utils import DownloadError
 
 
-def Info(url, option=Options(mode=2, playlist=False, debug=False), write_json:bool=False):
+async def Info(url, option=Options(mode=2, playlist=False, debug=False), write_json:bool=False):
     '''
     return: video_title, webpage_url, duration, sound_url, info_dict
     '''
