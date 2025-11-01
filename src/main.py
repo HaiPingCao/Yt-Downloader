@@ -19,12 +19,12 @@ async def get_info(url:str, v_start:int=1, v_end:int=2):
 
 @app.get("/music_info/")
 async def get_video_info(url: str, v_start: int = 1, v_end: int = 5):
-    info = await get_info(url, v_start, v_end)
-    if info is None:
-        return {"status": "Error: Could not fetch video info"}
-    return info
+     info = await get_info(url, v_start, v_end)
+     if info is None:
+          return {"status": "Error: Could not fetch video info"}
+     return info
 
 
-if __name__ == '__main__':
-     pass
-# 
+# if __name__ == '__main__':
+#      pass
+# # 
