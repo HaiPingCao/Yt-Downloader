@@ -2,40 +2,53 @@ const connectBtn = document.getElementById("connectBtn");
 const clearBtn = document.getElementById("clearBtn");
 const output = document.getElementById("output");
 
-const timestamp = () =>
-  new Date().toLocaleTimeString("en-GB", { hour12: false }) +
-  "." +
-  new Date().getMilliseconds();
+const timestamp = () => {
+  const d = new Date();
+  return d.toISOString().split("T")[1]; // e.g., "14:05:32.481Z"
+};
 
-const log = (msg) => {
+const log = (msg, type = "log") => {
   const p = document.createElement("p");
-  p.className = "log";
+  p.className = `log ${type}`;
   p.textContent = `[${timestamp()}] ${msg}`;
   output.appendChild(p);
-  console.log(`[${timestamp()}] ${msg}`);
+  console[type === "error" ? "error" : "log"](`[${timestamp()}] ${msg}`);
 };
 
 connectBtn.addEventListener("click", () => {
-  const url = document.getElementById("url").value;
+  const url = document.getElementById("url").value.trim();
   const v_start = parseInt(document.getElementById("v_start").value);
   const v_end = parseInt(document.getElementById("v_end").value);
 
-  const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/music_info`);
+  if (!url) return log("⚠️ Please enter a valid URL", "error");
 
-  log("Initializing WebSocket...");
+  const wsUrl = `ws://${window.location.hostname}:8000/ws/music_info`;
+  const ws = new WebSocket(wsUrl);
+
+  log(`Connecting to ${wsUrl}...`);
 
   ws.onopen = () => {
     log("✅ WebSocket connected");
     const payload = JSON.stringify({ url, v_start, v_end });
-    log(`Sending data: ${payload}`);
+    log(`📤 Sending: ${payload}`);
     ws.send(payload);
   };
 
   ws.onmessage = (event) => {
-    const now = timestamp();
-    log(`Received message at ${now}`);
-
     const data = JSON.parse(event.data);
+    const now = timestamp();
+
+    if (data.status === "complete") {
+      log(`✅ Completed in ${data.total_time ?? "unknown"}s`);
+      return;
+    }
+    if (data.error) {
+      log(`⚠️ Error: ${data.error}`, "error");
+      return;
+    }
+
+    log(`📥 Message received for video ${data.index}`);
+
     const item = document.createElement("div");
     item.className = "item";
 
@@ -58,7 +71,7 @@ connectBtn.addEventListener("click", () => {
   };
 
   ws.onclose = (e) => log(`❌ WebSocket closed (code=${e.code})`);
-  ws.onerror = (err) => log(`⚠️ WebSocket error: ${err.message || err}`);
+  ws.onerror = (err) => log(`⚠️ WebSocket error: ${err.message || err}`, "error");
 });
 
 // 🧹 Clear output button

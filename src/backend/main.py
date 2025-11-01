@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
 
+
 app = FastAPI()
 
 # Turn off CORS
@@ -26,6 +27,8 @@ async def get_info(url:str, start_index:int=0, end_index:int=0):
     return info_out
 
 
+import asyncio
+
 @app.websocket("/ws/music_info")
 async def ws_music_info(ws: WebSocket):
     await ws.accept()
@@ -36,22 +39,36 @@ async def ws_music_info(ws: WebSocket):
         start = params.get("v_start")
         end = params.get("v_end")
 
-        info_list = []
+        # Limit concurrent fetches to avoid overwhelming the server
+        semaphore = asyncio.Semaphore(3)
+
+        async def fetch_and_send(index):
+            async with semaphore:
+                # Fetch video info
+                info = await get_info(url, index, index + 1)
+                
+                # Prepare response
+                ws_info = {
+                    "index": index,
+                    "duration": str(info[0][0][2]),
+                    "title": str(info[0][0][0]),
+                    "audio_url": str(info[0][0][3])
+                }
+                
+                # Send immediately
+                await ws.send_json(ws_info)
+                
+                # Force flush to prevent buffering
+                await asyncio.sleep(0)
         
-        for i in range(start, end + 1):
-            info = await get_info(url, i, i + 1)
-            info_list.append(info[0])
-            
-            # Use len(info_list) - 1 as index, not i
-            idx = len(info_list) - 1
-            ws_info = {
-                "index": i,
-                "duration": str(info_list[idx][0][2]),
-                "title": str(info_list[idx][0][0]),
-                "audio_url": str(info_list[idx][0][3])
-            }
-            
-            await ws.send_json(ws_info)
+        # Create all tasks at once
+        tasks = [
+            asyncio.create_task(fetch_and_send(i)) 
+            for i in range(start, end + 1)
+        ]
+        
+        # Wait for all to complete
+        await asyncio.gather(*tasks)
         
         # Send completion signal
         await ws.send_json({"status": "complete"})
