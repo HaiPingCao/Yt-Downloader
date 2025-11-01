@@ -1,0 +1,20 @@
+# Image chính thức của Python
+FROM python:3.13-slim
+
+# Tạo thư mục làm việc
+WORKDIR /app
+
+# Copy file dependency và cài đặt
+COPY src/backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy toàn bộ mã backend vào container
+COPY src/backend /app
+
+# Expose cổng 8000
+EXPOSE 8000
+
+# Chạy
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["fastapi", "dev", "main.py", "--host", "0.0.0.0", "--port", "8000"]
+# CMD ["fastapi", "run", "main.py"]
