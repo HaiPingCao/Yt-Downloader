@@ -19,13 +19,28 @@ app.add_middleware(
 
 async def get_info(url:str, start_index:int=0, end_index:int=0):
     info_out = []
+    if (end_index == start_index == 0):
+        options = Options(
+            mode=2, 
+            playlist=True, 
+            debug=False, 
+            playlist_items_index=""
+            )
+        info = await Info(url, options, write_json=False)
+        info_out.append(info)
+        
     for i in range(start_index, end_index):
         i += 1
-        options = Options(mode=2, playlist=True, debug=False, playlist_items_index=f"{i}-{i}")
+        options = Options(
+            mode=2, 
+            playlist=True, 
+            debug=False, 
+            playlist_items_index=f"{i}-{i}"
+            )
         info = await Info(url, options, write_json=False)
         info_out.append(info)
     return info_out
-
+ 
 
 import asyncio
 

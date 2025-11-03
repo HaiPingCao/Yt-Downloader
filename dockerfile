@@ -5,13 +5,11 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # Copy file dependency và cài đặt
-COPY src/backend/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy toàn bộ mã backend vào container
-COPY src/backend /app
+COPY src /app
 
-# Expose cổng 8000
 EXPOSE 8000
 
 # Chạy
