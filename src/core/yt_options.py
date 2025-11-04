@@ -37,7 +37,7 @@ def Options(
     # PLAYLIST ?
     if playlist == False:
         modified_options.update({
-            'flat_list': True,
+            # 'flat_list': True,
             'noplaylist': True
             })
     # DEBUG ?
