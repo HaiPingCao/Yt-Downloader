@@ -11,7 +11,7 @@ options:dict = {
     'formats': 'bestaudio/best', 
     'audioformat': 'best',   
 
-    'abort_on_unavailable_fragments': True,
+    'skip_unavailable_fragments': True,
     'keepvideo': False,
 
     'flat_list': False,
