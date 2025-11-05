@@ -6,23 +6,14 @@ from utils.link import *
 from utils.benchmark import *
 
 
-async def get_info(url: str, start_index: int = 0, end_index: int = 0):
-    async def fetch_single(index):
-        options = Options(
-            mode=2, 
-            playlist=True, 
-            debug=False, 
-            playlist_items_index=f"{index}-{index}"
-        )
-        return await extract_info(url, options)
-    
-    # Create all tasks
-    tasks = [fetch_single(i + 1) for i in range(start_index, end_index)]
-    
-    # Run all concurrently
-    info_out = await asyncio.gather(*tasks)
-    
+async def get_info(url:str, v_start:int=1, v_end:int=2):    
+    info_out = []
+    for i in range(v_start, v_end):
+        options = Options(mode=2, playlist=True, debug=False, playlist_items_index=f"{i}-{i}")
+        info = await extract_info(url, options)
+        info_out.append(info)
     return info_out
+
 
 @bm_async_run_time
 async def main():

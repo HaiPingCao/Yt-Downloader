@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
 
-
 app = FastAPI()
 
 # Turn off CORS
