@@ -1,10 +1,11 @@
+import asyncio
 import subprocess
 import yt_dlp
 from core.yt_options import Options
-from yt_dlp.utils import DownloadError
+from yt_dlp.utils import DownloadError, UnavailableVideoError
 
 
-async def extract_info(
+def extract_info(
     url, 
     option=Options(mode=2, playlist=False, debug=False), 
     # write_json:bool=False
@@ -19,27 +20,40 @@ async def extract_info(
             
             entries = info_dict.get('entries', [info_dict])
             for entry in entries:
-                # print(entry)
+                # Skip entries that are None (yt-dlp returns None for unavailable videos when ignoreerrors=True)
+                if not entry:
+                    # optional: log/notify about skipped entry
+                    # print("Skipping unavailable playlist entry")
+                    continue
+
+                # Safely extract fields from entry dict
                 video_title = entry.get('title', None)
                 webpage_url = entry.get('webpage_url', None)
                 duration = entry.get('duration', None)
                 sound = None
-                if entry and 'formats' in entry and entry['formats']:
+                if 'formats' in entry and entry['formats']:
                     sound = next(
                         (f['url'] for f in entry['formats']
                          if f and 'ext' in f and 'url' in f and f['ext'] in ['m4a', 'webm'] and f.get('vcodec') == 'none'),
                         None
                     )
+
                 # if write_json:
                 #     with open("info_list.json", "w") as f:
                 #         json.dump(info_dict, f, indent=4)
                 return_list.append((video_title, webpage_url, duration, sound))
-            
             return return_list
 
     except DownloadError as e:
         print(f"Error extracting info: {e}")
         return []
+    except UnavailableVideoError as e:
+        print(f"Video unavailable: {e}")
+        return []
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return []
+    
 
 
 def get_playlist_count(url):

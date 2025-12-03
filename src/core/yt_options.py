@@ -11,7 +11,7 @@ options:dict = {
     'formats': 'bestaudio/best', 
     'audioformat': 'best',   
 
-    'skip_unavailable_fragments': True,
+    'abort_on_unavailable_fragments': False,
     'keepvideo': False,
 
     'flat_list': False,
@@ -23,7 +23,8 @@ def Options(
     playlist:bool, 
     debug:bool, 
     download_folder:str = "\\Temp",
-    playlist_items_index:str = "1-20"
+    playlist_items_index:str = "1-20",
+    ignore_unavailable: bool = True
     ):
 
     '''
@@ -40,6 +41,9 @@ def Options(
             # 'flat_list': True,
             'noplaylist': True
             })
+    # IGNORE UNAVAILABLE VIDEOS ? (maps to yt-dlp 'ignoreerrors')
+    # When True, yt-dlp will skip/unavailable videos in playlists instead of aborting.
+    modified_options['ignoreerrors'] = bool(ignore_unavailable)
     # DEBUG ?
     if debug == True:
         modified_options.update({

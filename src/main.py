@@ -27,7 +27,7 @@ async def get_info(url:str, start_index:int=0, end_index:int=0):
             debug=False, 
             playlist_items_index=f"{i}-{i}"
             )
-        info = await extract_info(url, options)
+        info = extract_info(url, options)
         info_out.append(info)
     return info_out
 
