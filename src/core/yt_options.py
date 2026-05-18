@@ -1,67 +1,65 @@
 import os
+from typing import Literal
 
-options:dict = {
-'format': 'bestaudio/best',
-    'no_warnings': True,
-    'ignoreerrors': True,
-    'quiet': True,
-    'verbose': False,
-    'simulate': True,
-    
-    'formats': 'bestaudio/best', 
-    'audioformat': 'best',   
-
-    'skip_unavailable_fragments': True,
-    'keepvideo': False,
-
-    'flat_list': False,
-    'noplaylist': False,
+# Valid yt-dlp top-level keys only
+_BASE: dict = {
+    "quiet": True,
+    "no_warnings": True,
+    "ignoreerrors": True,
+    "verbose": False,
+    "format": "bestaudio/best",
+    "noplaylist": False,
+    "skip_unavailable_fragments": True,
 }
 
-def Options(
-    mode:int, 
-    playlist:bool, 
-    debug:bool, 
-    download_folder:str = "\\Temp",
-    playlist_items_index:str = "1-20"
-    ):
 
-    '''
-    mode:int (1: download mp3, 2: info)\n
-    playlist:boolean\n
-    debug:boolean \n
-    download_folder:str\n
-    playlist_items_index:str (default: "1-20", set to "" for full playlist)\n
-    '''
-    modified_options = options.copy()
-    # PLAYLIST ?
-    if playlist == False:
-        modified_options.update({
-            # 'flat_list': True,
-            'noplaylist': True
-            })
-    # DEBUG ?
-    if debug == True:
-        modified_options.update({
-            'no_warnings': False,
-            'quiet': False,
-            'verbose': True
-        })
-    #MP3 STREAM / INFO
-    if mode == 1:
-        pass
-    
-    # MP3 DOWNLOAD
-    elif mode == 2:
-        modified_options['simulate'] = False
-        modified_options['outtmpl'] = os.path.join(download_folder, '%(title)s.%(ext)s')
-        modified_options['postprocessors']=[{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }]
-    # PLAYLIST ITEMS INDEX
-    if playlist_items_index != "":
-        modified_options['playlist_items'] = playlist_items_index
+def build_options(
+    mode: Literal["info", "download"],
+    playlist: bool = True,
+    debug: bool = False,
+    download_folder: str = r"\Temp",
+    playlist_items: str | None = None,  # e.g. "1-20", "3", "1,5,7" — None = full
+) -> dict:
+    """
+    mode:
+        'info'     — extract metadata only, no download
+        'download' — download and convert to mp3
 
-    return modified_options
+    playlist_items:
+        yt-dlp playlist_items string. None = no restriction (full playlist).
+        Examples: "1-20", "3", "1,3,5-10"
+    """
+    opts = _BASE.copy()
+
+    if not playlist:
+        opts["noplaylist"] = True
+
+    if debug:
+        opts.update(
+            {
+                "quiet": False,
+                "no_warnings": False,
+                "verbose": True,
+            }
+        )
+
+    if mode == "info":
+        # extract_flat: True = fast metadata only (no format resolution)
+        # set False if you need the resolved direct audio stream URL
+        opts["extract_flat"] = False
+
+    elif mode == "download":
+        opts["outtmpl"] = os.path.join(download_folder, "%(title)s.%(ext)s")
+        opts["keepvideo"] = False
+        opts["postprocessors"] = [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "192",
+            }
+        ]
+
+    if playlist_items is not None:
+        opts["playlist_items"] = playlist_items
+
+    return opts
