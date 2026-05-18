@@ -8,7 +8,7 @@ import subprocess
 import yt_dlp
 from core.yt_options import build_options
 from yt_dlp.utils import DownloadError
-from utils.benchmark import bm_async_run_time
+from tools.benchmark_tools import bm_async_run_time
 
 # Split playlist extraction into index ranges, fetch those ranges concurrently,
 # and optionally stream successful results to a JSONL file in playlist order.

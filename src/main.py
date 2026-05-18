@@ -1,4 +1,4 @@
-from core.yt_parallel import *
+from core.yt import *
 
 
 def yt_dispatcher(url: str) -> None:
