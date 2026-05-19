@@ -1,7 +1,7 @@
 import asyncio
-
+from collections.abc import Callable
 from core import yt
-from core.yt import TrackTuple
+from core.yt import TrackInfoTuple, SegmentResult
 
 
 def yt_dispatcher(
@@ -9,31 +9,26 @@ def yt_dispatcher(
     *,  # The * forces everything after it to be keyword-only arguments.
     segment_size: int = 5,
     max_concurrent: int = 10,
+    on_segment: Callable[[SegmentResult], None] | None = None,
     parallel_threshold: int = 10,
-    output_dir: str | None = None,
-) -> list[TrackTuple]:
-    """Fetch track info from *url*, choosing the parallel path automatically.
-
-    When the playlist contains more entries than *parallel_threshold* the work
-    is split into segments of *segment_size* and up to *max_concurrent*
-    segments are fetched at the same time.  Smaller playlists (or single
-    videos) fall back to the simpler `extract_info` call.
-
-    Returns the flat list of extracted tracks.
-    """
+) -> list[TrackInfoTuple]:
     try:
-        count = yt.get_playlist_count(url)
+        count = yt.get_playlist_count(  # pyright: ignore[reportAttributeAccessIssue]
+            url
+        )  # pyright: ignore[reportAttributeAccessIssue]
     except Exception as ex:
         print(f"[dispatcher] Failed to get playlist count: {ex}")
         return []
 
     if count >= parallel_threshold:
         tracks, failed = asyncio.run(
-            yt.extract_info_parallel(
+            yt.extract_info_parallel(  # pyright: ignore[reportAttributeAccessIssue]
                 url=url,
+                on_segment=lambda segment: print(
+                    f"[dispatcher] Processing segment {segment.start_index}-{segment.end_index}"
+                ),
                 segment_size=segment_size,
                 max_concurrent=max_concurrent,
-                output_dir=output_dir,
             )
         )
         if failed:
@@ -43,13 +38,30 @@ def yt_dispatcher(
             )
         print(f"[dispatcher] Extracted {len(tracks)} tracks in parallel.")
     else:
-        tracks = asyncio.run(yt.extract_info(url))
+        tracks = yt.extract_info(url)  # pyright: ignore[reportAttributeAccessIssue]
         print(f"[dispatcher] Extracted {len(tracks)} track(s).")
 
     return tracks
 
 
+def process(sr: SegmentResult) -> None:
+    if sr.success:
+        print(
+            f"Segment {sr.start_index}-{sr.end_index} succeeded with {len(sr.tracks)} tracks."
+        )
+    else:
+        print(f"Segment {sr.start_index}-{sr.end_index} failed with error: {sr.error}")
+
+
 if __name__ == "__main__":
-    url: str = "https://music.youtube.com/watch?v=DZ0oir_DLao&si=ssSIQErl9xiUyj55"
-    yt = yt_dispatcher(url=url)
-    print(yt)
+    # ? single video example:
+    # url: str = "https://music.youtube.com/watch?v=DZ0oir_DLao&si=ssSIQErl9xiUyj55"
+    # ? playlist example:
+    url: str = (
+        "https://www.youtube.com/playlist?list=PLKXe1HzhulvPXy5o3DgA1Lbl2SCyz55Ez"
+    )
+    yt = yt_dispatcher(
+        url=url,
+        on_segment=process,
+    )
+    # print(yt)

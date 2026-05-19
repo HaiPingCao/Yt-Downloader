@@ -1,26 +1,20 @@
 import asyncio
-import json
+
+# import json
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
+
+# from core.utils import generate_run_id
+# from pathlib import Path
 from collections.abc import Callable
 import yt_dlp
 from core.yt_options import build_options
 from yt_dlp.utils import DownloadError
-from tools.benchmark_tools import bm_async_run_time
 
-# Split playlist extraction into index ranges, fetch those ranges concurrently,
-# and optionally stream successful results to a JSONL file in playlist order.
-type TrackTuple = tuple[str | None, str | None, float | None, str | None]
+# from tools.benchmark_tools import bm_async_run_time
 
 
-def generate_run_id() -> str:
-    now = datetime.now()
-    return now.strftime("fetched_%H-%M_%d-%m-%Y")
-
-
-async def extract_info(
+def extract_info(
     url,
     option=build_options(mode="info", playlist=False, debug=False),
     # write_json:bool=False
@@ -82,18 +76,23 @@ def get_playlist_count(url: str) -> int:
     return list_count  # pyright: ignore[reportGeneralTypeIssues]
 
 
+# Split playlist extraction into index ranges, fetch those ranges concurrently,
+# and optionally stream successful results to a JSONL file in playlist order.
+type TrackInfoTuple = tuple[str | None, str | None, float | None, str | None]
+
+
 @dataclass
 class SegmentResult:
     start_index: int
     end_index: int
     success: bool
-    tracks: list[TrackTuple] = field(default_factory=list)
+    tracks: list[TrackInfoTuple] = field(default_factory=list)
     error: str | None = None
 
 
 def _extract_segment_blocking(
     url: str, start_index: int, end_index: int
-) -> list[TrackTuple]:
+) -> list[TrackInfoTuple]:
     # yt-dlp work is isolated in this synchronous helper so the async caller can
     # run several playlist ranges through a thread pool without blocking the
     # event loop.
@@ -106,7 +105,7 @@ def _extract_segment_blocking(
             else f"{start_index}-{end_index}"
         ),
     )
-    return asyncio.run(extract_info(url, option=opts))
+    return extract_info(url, option=opts)
 
 
 # fetch a playlist segment in a thread pool and return the results asynchronously.
@@ -144,17 +143,17 @@ async def _fetch_segment(
             )
 
 
-def _write_segment(file: Path, segment: SegmentResult) -> None:
-    """Append all tracks from a completed segment to the JSONL file."""
-    with file.open("a", encoding="utf-8") as f:
-        for title, webpage_url, duration, sound_url in segment.tracks:
-            record = {
-                "title": title,
-                "webpage_url": webpage_url,
-                "duration": duration,
-                "sound_url": sound_url,
-            }
-            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+# def _write_segment_to_file(file: Path, segment: SegmentResult) -> None:
+#     """Append all tracks from a completed segment to the JSONL file."""
+#     with file.open("a", encoding="utf-8") as f:
+#         for title, webpage_url, duration, sound_url in segment.tracks:
+#             record = {
+#                 "title": title,
+#                 "webpage_url": webpage_url,
+#                 "duration": duration,
+#                 "sound_url": sound_url,
+#             }
+#             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
 async def extract_info_parallel(
@@ -165,28 +164,21 @@ async def extract_info_parallel(
     end_index: int | None = None,
     segment_size: int = 5,
     max_concurrent: int = 4,
-    output_dir: str | None | Path = ".",
-) -> tuple[list[TrackTuple], list[SegmentResult]]:
+) -> tuple[list[TrackInfoTuple], list[SegmentResult]]:
+
+    # Resolve the playlist length only when the caller wants the full tail.
     if end_index is None:
-        # Resolve the playlist length only when the caller wants the full tail.
         end_index = get_playlist_count(url)
 
-    run_id = generate_run_id()
-    if output_dir is not None:
-        out_file = Path(output_dir) / f"{run_id}.jsonl"
-        out_file.parent.mkdir(parents=True, exist_ok=True)
-        out_file.touch()
-    else:
-        out_file = None
-
     segments: list[tuple[int, int]] = []
+    # force index to start from 1 or higher
     start = max(start_index, 1)
     while start <= end_index:
         # Build inclusive playlist index ranges: 1-5, 6-10, etc.
         end = min(start + segment_size - 1, end_index)
         segments.append((start, end))
         start = end + 1
-
+    # The semaphore limits how many segments can be extracting at the same time
     semaphore = asyncio.Semaphore(max_concurrent)
     all_results: list[SegmentResult] = []
     failed: list[SegmentResult] = []
@@ -195,19 +187,6 @@ async def extract_info_parallel(
     # output file stays in playlist order even when later tasks complete first.
     buffer: dict[int, SegmentResult] = {}
     next_expected: int = segments[0][0]  # first segment's start_index
-
-    def flush_buffer() -> None:
-        nonlocal next_expected
-        while next_expected in buffer:
-            seg = buffer.pop(next_expected)
-            if out_file is not None:
-                _write_segment(out_file, seg)
-                print(
-                    f"Segment [{seg.start_index}-{seg.end_index}] written ({len(seg.tracks)} tracks)"
-                )
-            if on_segment is not None:
-                on_segment(seg)
-            next_expected = seg.end_index + 1
 
     with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
         # Schedule every segment immediately; max_concurrent controls how many
@@ -226,7 +205,13 @@ async def extract_info_parallel(
             # inspection by the caller.
             if result.success:
                 buffer[result.start_index] = result
-                flush_buffer()
+                while next_expected in buffer:
+                    seg = buffer.pop(next_expected)
+                    #! Operation to do with completed segment (e.g. write to file, print info, etc.)
+                    on_segment(seg) if on_segment is not None else None
+                    if on_segment is not None:
+                        on_segment(seg)
+                    next_expected = seg.end_index + 1
             else:
                 failed.append(result)
                 print(
@@ -234,11 +219,11 @@ async def extract_info_parallel(
                 )
 
     all_results.sort(key=lambda r: r.start_index)
-    tracks: list[TrackTuple] = []
+    tracks: list[TrackInfoTuple] = []
     for r in all_results:
         if r.success:
             tracks.extend(r.tracks)
 
-    if out_file is not None:
-        print(f"\nDone. {len(tracks)} tracks written to {out_file}")
+    # if out_file is not None:
+    #     print(f"\nDone. {len(tracks)} tracks written to {out_file}")
     return tracks, failed
