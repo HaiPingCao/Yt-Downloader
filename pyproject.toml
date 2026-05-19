@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "python-youtube-downloader-core"
-version = "0.1.0"
+version = "0.0.1"
 description = "A youtube video and music downloader using python and yt-dlp"
 readme = "README.md"
 requires-python = "==3.14.5"
 authors = [
-    {name = "HaiPingCao", email = ""}
+    {name = "HaiPingCao", email = "luongminhhai28822@gmail.com"}
 ]
 keywords = ["youtube", "downloader", "yt-dlp", "pytube", "music", "video"]
 classifiers = [
@@ -37,8 +37,8 @@ Homepage = "https://github.com/HaiPingCao/python-youtube-downloader-core"
 Repository = "https://github.com/HaiPingCao/python-youtube-downloader-core.git"
 Issues = "https://github.com/HaiPingCao/python-youtube-downloader-core/issues"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+# [tool.setuptools]
+# package-dir = {"" = "src"}
 
 [tool.setuptools.packages]
 find = {}
