@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-youtube-downloader-core"
+version = "0.1.0"
+description = "A youtube video and music downloader using python and yt-dlp"
+readme = "README.md"
+requires-python = "==3.14.5"
+authors = [
+    {name = "HaiPingCao", email = ""}
+]
+keywords = ["youtube", "downloader", "yt-dlp", "pytube", "music", "video"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+    "yt-dlp",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/HaiPingCao/python-youtube-downloader-core"
+Repository = "https://github.com/HaiPingCao/python-youtube-downloader-core.git"
+Issues = "https://github.com/HaiPingCao/python-youtube-downloader-core/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.black]
+line-length = 88
+target-version = ["py314"]
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.14"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
