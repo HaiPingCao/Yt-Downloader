@@ -1,5 +1,4 @@
 import asyncio
-import subprocess
 
 from core import yt
 from core.yt import TrackTuple
@@ -7,7 +6,7 @@ from core.yt import TrackTuple
 
 def yt_dispatcher(
     url: str,
-    *,
+    *,  # The * forces everything after it to be keyword-only arguments.
     segment_size: int = 5,
     max_concurrent: int = 10,
     parallel_threshold: int = 10,
@@ -24,9 +23,9 @@ def yt_dispatcher(
     """
     try:
         count = yt.get_playlist_count(url)
-    except (ValueError, subprocess.CalledProcessError):
-        # Not a playlist (single video) or yt-dlp couldn't resolve a count.
-        count = 1
+    except Exception as ex:
+        print(f"[dispatcher] Failed to get playlist count: {ex}")
+        return []
 
     if count >= parallel_threshold:
         tracks, failed = asyncio.run(
@@ -48,3 +47,9 @@ def yt_dispatcher(
         print(f"[dispatcher] Extracted {len(tracks)} track(s).")
 
     return tracks
+
+
+if __name__ == "__main__":
+    url: str = "https://music.youtube.com/watch?v=DZ0oir_DLao&si=ssSIQErl9xiUyj55"
+    yt = yt_dispatcher(url=url)
+    print(yt)

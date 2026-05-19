@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-import subprocess
+from collections.abc import Callable
 import yt_dlp
 from core.yt_options import build_options
 from yt_dlp.utils import DownloadError
@@ -67,22 +67,19 @@ async def extract_info(
         return []
 
 
-def get_playlist_count(url):
-    result = subprocess.run(
-        [
-            "yt-dlp",
-            "--flat-playlist",
-            "--print",
-            "%(playlist_count)s",
-            "--playlist-items",
-            "1",  # Only process first item
-            url,
-        ],
-        capture_output=True,
-        text=True,
-    )
-
-    return int(result.stdout.strip())
+def get_playlist_count(url: str) -> int:
+    ydl_opts = {
+        "quiet": True,
+        "no_warnings": True,
+        "extract_flat": "in_playlist",  # equivalent to --flat-playlist
+        "playlist_items": "1",
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:  # pyright: ignore[reportArgumentType]
+        info = ydl.extract_info(url, download=False)
+        list_count = info.get("playlist_count")
+        if list_count is None:
+            return 1  # Not a playlist or count not available; treat as single video.
+    return list_count  # pyright: ignore[reportGeneralTypeIssues]
 
 
 @dataclass
@@ -162,6 +159,8 @@ def _write_segment(file: Path, segment: SegmentResult) -> None:
 
 async def extract_info_parallel(
     url: str,
+    *,
+    on_segment: Callable[[SegmentResult], None] | None = None,
     start_index: int = 1,
     end_index: int | None = None,
     segment_size: int = 5,
@@ -206,7 +205,8 @@ async def extract_info_parallel(
                 print(
                     f"Segment [{seg.start_index}-{seg.end_index}] written ({len(seg.tracks)} tracks)"
                 )
-            # The next segment starts immediately after this inclusive range.
+            if on_segment is not None:
+                on_segment(seg)
             next_expected = seg.end_index + 1
 
     with ThreadPoolExecutor(max_workers=max_concurrent) as executor:
