@@ -1,17 +1,13 @@
 import asyncio
-
-# import json
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-
-# from core.utils import generate_run_id
-# from pathlib import Path
 from collections.abc import Callable
 import yt_dlp
 from core.yt_options import build_options
 from yt_dlp.utils import DownloadError
+from tools.logging_formatter import AnsiColor, LogMode, Log
 
-# from tools.benchmark_tools import bm_async_run_time
+log = Log(operation_name="Extractor", is_timestamp=False, log_level=LogMode.DEBUG)
 
 
 def extract_info(
@@ -49,15 +45,12 @@ def extract_info(
                         ),
                         None,
                     )
-                # if write_json:
-                #     with open("info_list.json", "w") as f:
-                #         json.dump(info_dict, f, indent=4)
                 return_list.append((video_title, webpage_url, duration, sound))
 
             return return_list
 
     except DownloadError as e:
-        print(f"Error extracting info: {e}")
+        log.error(f"Error extracting info: {e}")
         return []
 
 
@@ -206,15 +199,16 @@ async def extract_info_parallel(
             if result.success:
                 buffer[result.start_index] = result
                 while next_expected in buffer:
-                    seg = buffer.pop(next_expected)
-                    #! Operation to do with completed segment (e.g. write to file, print info, etc.)
-                    on_segment(seg) if on_segment is not None else None
+                    segm = buffer.pop(next_expected)
+                    #! START: Operation to do with completed segment (e.g. write to file, print info, etc.)
+                    on_segment(segm) if on_segment is not None else None
+                    #! END: Operation to do with completed segment
                     if on_segment is not None:
-                        on_segment(seg)
-                    next_expected = seg.end_index + 1
+                        on_segment(segm)
+                    next_expected = segm.end_index + 1
             else:
                 failed.append(result)
-                print(
+                log.error(
                     f"Segment [{result.start_index}-{result.end_index}] failed: {result.error}"
                 )
 
@@ -223,7 +217,4 @@ async def extract_info_parallel(
     for r in all_results:
         if r.success:
             tracks.extend(r.tracks)
-
-    # if out_file is not None:
-    #     print(f"\nDone. {len(tracks)} tracks written to {out_file}")
     return tracks, failed
