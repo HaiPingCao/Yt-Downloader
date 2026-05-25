@@ -1,10 +1,9 @@
 import asyncio
 from collections.abc import Callable
+from config import dispatcher_log_config
+from core.yt_dlp_extractor import *
 
-from tools.logging_formatter import LogMode, Log
-from core.yt import *
-
-log = Log(operation_name="Dispatcher", is_timestamp=False, log_level=LogMode.DEBUG)
+log = dispatcher_log_config
 
 
 def yt_dispatcher(
@@ -19,6 +18,7 @@ def yt_dispatcher(
         count = get_playlist_count(  # pyright: ignore[reportAttributeAccessIssue]
             url
         )  # pyright: ignore[reportAttributeAccessIssue]
+        log.info(f"Playlist has {count} track(s).")
     except Exception as ex:
         log.error(f"Failed to get playlist count: {ex}")
         return []

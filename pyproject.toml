@@ -22,6 +22,7 @@ classifiers = [
 ]
 dependencies = [
     "yt-dlp",
+    "grpcio>=1.64",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +30,7 @@ dev = [
     "pytest>=7.0",
     "black>=23.0",
     "flake8>=6.0",
+    "grpcio-tools>=1.64",
     "mypy>=1.0",
 ]
 
@@ -37,11 +39,15 @@ Homepage = "https://github.com/HaiPingCao/python-youtube-downloader-core"
 Repository = "https://github.com/HaiPingCao/python-youtube-downloader-core.git"
 Issues = "https://github.com/HaiPingCao/python-youtube-downloader-core/issues"
 
-# [tool.setuptools]
-# package-dir = {"" = "src"}
+[project.scripts]
+segment-grpc-server = "transport.segment_server:main"
+segment-grpc-client = "transport.segment_client:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages]
-find = {}
+find = {where = ["src"]}
 
 [tool.black]
 line-length = 88

@@ -1,13 +1,13 @@
 import asyncio
+import yt_dlp
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from collections.abc import Callable
-import yt_dlp
-from core.yt_options import build_options
+from core.yt_dlp_options import build_options
 from yt_dlp.utils import DownloadError
-from tools.logging_formatter import AnsiColor, LogMode, Log
+from config import yt_log_config
 
-log = Log(operation_name="Extractor", is_timestamp=False, log_level=LogMode.DEBUG)
+log = yt_log_config
 
 
 def extract_info(
@@ -134,19 +134,6 @@ async def _fetch_segment(
                 success=False,
                 error=str(ex),
             )
-
-
-# def _write_segment_to_file(file: Path, segment: SegmentResult) -> None:
-#     """Append all tracks from a completed segment to the JSONL file."""
-#     with file.open("a", encoding="utf-8") as f:
-#         for title, webpage_url, duration, sound_url in segment.tracks:
-#             record = {
-#                 "title": title,
-#                 "webpage_url": webpage_url,
-#                 "duration": duration,
-#                 "sound_url": sound_url,
-#             }
-#             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
 async def extract_info_parallel(
