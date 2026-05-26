@@ -23,6 +23,7 @@ classifiers = [
 dependencies = [
     "yt-dlp",
     "grpcio>=1.64",
+    "protobuf>=5.26",
 ]
 
 [project.optional-dependencies]

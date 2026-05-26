@@ -4,8 +4,8 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from collections.abc import Callable
 from core.yt_dlp_options import build_options
-from yt_dlp.utils import DownloadError
-from config import yt_log_config
+from yt_dlp.utils import DownloadError, UnavailableVideoError
+from log_config import yt_log_config
 
 log = yt_log_config
 
@@ -31,9 +31,9 @@ def extract_info(
                 video_title = entry.get("title", None)
                 webpage_url = entry.get("webpage_url", None)
                 duration = entry.get("duration", None)
-                sound = None
+                sound_url = None
                 if entry and "formats" in entry and entry["formats"]:
-                    sound = next(
+                    sound_url = next(
                         (
                             f["url"]
                             for f in entry["formats"]
@@ -45,33 +45,47 @@ def extract_info(
                         ),
                         None,
                     )
-                return_list.append((video_title, webpage_url, duration, sound))
+                thumbnail_url = entry.get("thumbnail", None)
+                return_list.append(
+                    (video_title, webpage_url, duration, sound_url, thumbnail_url)
+                )
+                # return_list.append(entry)
 
             return return_list
 
-    except DownloadError as e:
-        log.error(f"Error extracting info: {e}")
+    except UnavailableVideoError as e:
+        log.error(f"Video unavailable: {e}")
+        return []
+    except Exception as e:
+        log.error(f"Unexpected error: {e}")
         return []
 
 
 def get_playlist_count(url: str) -> int:
-    ydl_opts = {
-        "quiet": True,
-        "no_warnings": True,
-        "extract_flat": "in_playlist",  # equivalent to --flat-playlist
-        "playlist_items": "1",
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:  # pyright: ignore[reportArgumentType]
-        info = ydl.extract_info(url, download=False)
-        list_count = info.get("playlist_count")
-        if list_count is None:
-            return 1  # Not a playlist or count not available; treat as single video.
-    return list_count  # pyright: ignore[reportGeneralTypeIssues]
+    ydl_opts = build_options(mode="playlist_discover", playlist=False, debug=False)
+    is_bot_detected: bool = False
+    while True:
+        try:
+            if is_bot_detected:
+                ydl_opts.update({"cookiesfrombrowser": ("chrome",)})
+            with yt_dlp.YoutubeDL(
+                ydl_opts  # pyright: ignore[reportArgumentType]
+            ) as ydl:
+                info = ydl.extract_info(url, download=False)
+                list_count = info.get("playlist_count")
+                if list_count is None:
+                    return 1  # Not a playlist or count not available; treat as single video.
+                return list_count
+        except DownloadError as e:
+            log.error(str(e))
+            is_bot_detected = True
 
 
 # Split playlist extraction into index ranges, fetch those ranges concurrently,
 # and optionally stream successful results to a JSONL file in playlist order.
-type TrackInfoTuple = tuple[str | None, str | None, float | None, str | None]
+type TrackInfoTuple = tuple[
+    str | None, str | None, float | None, str | None, str | None
+]
 
 
 @dataclass
@@ -188,13 +202,14 @@ async def extract_info_parallel(
                 while next_expected in buffer:
                     segm = buffer.pop(next_expected)
                     #! START: Operation to do with completed segment (e.g. write to file, print info, etc.)
-                    on_segment(segm) if on_segment is not None else None
-                    #! END: Operation to do with completed segment
                     if on_segment is not None:
                         on_segment(segm)
+                    #! END: Operation to do with completed segment
                     next_expected = segm.end_index + 1
             else:
                 failed.append(result)
+                if on_segment is not None:
+                    on_segment(result)
                 log.error(
                     f"Segment [{result.start_index}-{result.end_index}] failed: {result.error}"
                 )

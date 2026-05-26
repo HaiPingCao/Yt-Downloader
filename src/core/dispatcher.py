@@ -1,6 +1,6 @@
 import asyncio
 from collections.abc import Callable
-from config import dispatcher_log_config
+from log_config import dispatcher_log_config
 from core.yt_dlp_extractor import *
 
 log = dispatcher_log_config
@@ -43,6 +43,15 @@ def yt_dispatcher(
         log.info(f"Extracted {len(tracks)} tracks in parallel.")
     else:
         tracks = extract_info(url)  # pyright: ignore[reportAttributeAccessIssue]
+        if on_segment is not None:
+            on_segment(
+                SegmentResult(
+                    start_index=1,
+                    end_index=len(tracks),
+                    success=True,
+                    tracks=tracks,
+                )
+            )
         log.info(f"Extracted {len(tracks)} track(s).")
 
     return tracks

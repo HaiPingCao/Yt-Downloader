@@ -14,7 +14,7 @@ _BASE: dict = {
 
 
 def build_options(
-    mode: Literal["info", "download"],
+    mode: Literal["info", "download", "playlist_discover"],
     playlist: bool = True,
     debug: bool = False,
     download_folder: str = r"\Temp",
@@ -22,13 +22,15 @@ def build_options(
 ) -> dict:
     """
     mode:
-        'info'     — extract metadata only, no download
+        'playlist_discover' — discover playlist items without downloading
+        'info'     — extract video metadata only, no download
         'download' — download and convert to mp3
 
     playlist_items:
         yt-dlp playlist_items string. None = no restriction (full playlist).
         Examples: "1-20", "3", "1,3,5-10"
     """
+
     opts = _BASE.copy()
 
     if not playlist:
@@ -42,6 +44,10 @@ def build_options(
                 "verbose": True,
             }
         )
+
+    if mode == "playlist_discover":
+        opts["extract_flat"] = True
+        opts["playlist_items"] = "1"  # Only need the first item to get the count
 
     if mode == "info":
         # extract_flat: True = fast metadata only (no format resolution)
