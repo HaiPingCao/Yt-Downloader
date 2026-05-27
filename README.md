@@ -17,6 +17,6 @@ fastapi dev run_server.py
 Build and run docker image
 
 ```
-docker build -t pydc .
-docker run -d --name pydc-container -p 8000:8000 pydc
+docker build -t yt-extractor-link-server .
+docker run -d --name yels-container -p 8000:8000 yt-extractor-link-server
 ```
