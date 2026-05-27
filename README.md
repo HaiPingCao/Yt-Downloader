@@ -1,16 +1,17 @@
 A youtube video, music downloader using python and yt-dlp
+Python 3.14.5 is required
 
 Export requirements.txt
 
 ```
-pip freeze
+pip freeze > requirements.txt
 ```
 
 Run server
 
 ```
 cd src
-fastapi dev transport.py
+fastapi dev run_server.py
 ```
 
 Build and run docker image

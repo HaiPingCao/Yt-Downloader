@@ -28,11 +28,11 @@ def disp_data_out(sr: SegmentResult) -> None:
 
 if __name__ == "__main__":
     # ? single video example:
-    url: str = "https://music.youtube.com/watch?v=DZ0oir_DLao&si=ssSIQErl9xiUyj55"
+    # url: str = "https://music.youtube.com/watch?v=DZ0oir_DLao&si=ssSIQErl9xiUyj55"
     # ? playlist example:
-    # url: str = (
-    #     "https://www.youtube.com/playlist?list=PLKXe1HzhulvNHCI_v3aYjFNOdA947qru9"
-    # )
+    url: str = (
+        "https://www.youtube.com/playlist?list=PLKXe1HzhulvNHCI_v3aYjFNOdA947qru9"
+    )
     yt = yt_dispatcher(
         url=url,
         on_segment=disp_data_out,

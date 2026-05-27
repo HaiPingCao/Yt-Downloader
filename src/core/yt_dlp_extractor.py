@@ -5,29 +5,29 @@ from dataclasses import dataclass, field
 from collections.abc import Callable
 from core.yt_dlp_options import build_options
 from yt_dlp.utils import DownloadError, UnavailableVideoError
-from log_config import yt_log_config
+from log_config import yt_log_config as log
 
-log = yt_log_config
+# Output tuple format for each track: (video_title, webpage_url, duration, sound_url, thumbnail_url)
+# Type alias for a track info tuple
+TrackInfoTuple = tuple[str | None, str | None, float | None, str | None, str | None]
 
 
-def extract_info(
+def extract_video_info(
     url,
     option=build_options(mode="info", playlist=False, debug=False),
-    # write_json:bool=False
-):
+) -> list[TrackInfoTuple]:
     """
     return: video_title, webpage_url, duration, sound_url, info_dict
     """
     try:
         with yt_dlp.YoutubeDL(option) as info:
             info_dict = info.extract_info(url, download=False)
-            return_list = []
+            return_list: list[TrackInfoTuple] = []
 
             entries = info_dict.get("entries", [info_dict])
             for entry in entries:
                 if not entry:
                     continue
-                # print(entry)
                 video_title = entry.get("title", None)
                 webpage_url = entry.get("webpage_url", None)
                 duration = entry.get("duration", None)
@@ -46,10 +46,8 @@ def extract_info(
                         None,
                     )
                 thumbnail_url = entry.get("thumbnail", None)
-                return_list.append(
-                    (video_title, webpage_url, duration, sound_url, thumbnail_url)
-                )
-                # return_list.append(entry)
+                output = (video_title, webpage_url, duration, sound_url, thumbnail_url)
+                return_list.append(output)
 
             return return_list
 
@@ -81,13 +79,6 @@ def get_playlist_count(url: str) -> int:
             is_bot_detected = True
 
 
-# Split playlist extraction into index ranges, fetch those ranges concurrently,
-# and optionally stream successful results to a JSONL file in playlist order.
-type TrackInfoTuple = tuple[
-    str | None, str | None, float | None, str | None, str | None
-]
-
-
 @dataclass
 class SegmentResult:
     start_index: int
@@ -112,7 +103,7 @@ def _extract_segment_blocking(
             else f"{start_index}-{end_index}"
         ),
     )
-    return extract_info(url, option=opts)
+    return extract_video_info(url, option=opts)
 
 
 # fetch a playlist segment in a thread pool and return the results asynchronously.

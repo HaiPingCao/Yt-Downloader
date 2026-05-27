@@ -9,6 +9,8 @@ log = dispatcher_log_config
 def yt_dispatcher(
     url: str,
     *,  # The * forces everything after it to be keyword-only arguments.
+    start_index: int | None = None,
+    end_index: int | None = None,
     segment_size: int = 5,
     max_concurrent: int = 10,
     on_segment: Callable[[SegmentResult], None] | None = None,
@@ -28,6 +30,8 @@ def yt_dispatcher(
             extract_info_parallel(  # pyright: ignore[reportAttributeAccessIssue]
                 url=url,
                 on_segment=on_segment,
+                start_index=start_index or 1,
+                end_index=end_index,
                 # on_segment=lambda segment: print(
                 #     f"[dispatcher] Processing segment {segment.start_index}-{segment.end_index}"
                 # ),
@@ -40,9 +44,9 @@ def yt_dispatcher(
                 f"{len(failed)} segment(s) failed "
                 f"(indices: {', '.join(f'{s.start_index}-{s.end_index}' for s in failed)})"
             )
-        log.info(f"Extracted {len(tracks)} tracks in parallel.")
+        log.info(f"Extracted {len(tracks)} tracks.")
     else:
-        tracks = extract_info(url)  # pyright: ignore[reportAttributeAccessIssue]
+        tracks = extract_video_info(url)  # pyright: ignore[reportAttributeAccessIssue]
         if on_segment is not None:
             on_segment(
                 SegmentResult(
