@@ -17,6 +17,22 @@ fastapi dev run_server.py
 Build and run docker image
 
 ```
-docker build -t yt-extractor-link-server .
-docker run -d --name yels-container -p 8000:8000 yt-extractor-link-server
+docker build -t yt-link-extractor-server .
+docker run -d --name yels-container -p 8000:8000 yt-link-extractor-server
+```
+
+Connect to WS
+
+```
+ws://localhost:8000/ws/music
+```
+
+Payload
+
+```
+{
+    "url":"str",
+    "start_index":int,
+    "end_index":int
+}
 ```
