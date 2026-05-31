@@ -1,0 +1,9 @@
+name: yle-server
+
+services:
+  yt-link-extractor-server:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      WS_URL: /ws/music

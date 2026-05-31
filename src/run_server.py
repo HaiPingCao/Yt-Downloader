@@ -1,8 +1,13 @@
 from core.dispatcher import yt_dispatcher
-from core.yt_dlp_options import build_options
+
+# from core.yt_dlp_options import build_options
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
+import os
+
+WS_URL = os.getenv("WS_URL", "/ws/music")
+print(f"WebSocket URL: {WS_URL}", flush=True)
 
 app = FastAPI()
 
@@ -15,10 +20,10 @@ app.add_middleware(
 )
 
 
-@app.websocket("/ws/music")
+@app.websocket(WS_URL)
 async def ws_music_info(ws: WebSocket):
     await ws.accept()
-
+    print(f"WebSocket URL: {WS_URL}")
     try:
 
         params = await ws.receive_json()
